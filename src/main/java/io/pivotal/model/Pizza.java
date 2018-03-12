@@ -14,14 +14,16 @@
 
 package io.pivotal.model;
 
+import org.apache.geode.pdx.PdxReader;
+import org.apache.geode.pdx.PdxSerializable;
+import org.apache.geode.pdx.PdxWriter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 
-import java.io.Serializable;
 import java.util.Set;
 
 @Region("Pizza")
-public class Pizza implements Serializable {
+public class Pizza implements PdxSerializable {
     @Id
     String name;
     Set<String> toppings;
@@ -55,5 +57,15 @@ public class Pizza implements Serializable {
 
     public String getSauce() {
         return sauce;
+    }
+
+    @Override
+    public void toData(PdxWriter writer) {
+
+    }
+
+    @Override
+    public void fromData(PdxReader reader) {
+
     }
 }

@@ -4,7 +4,7 @@ buildscript {
 		maven { url "https://repo.spring.io/libs-milestone" }
 		maven { url "https://repo.spring.io/libs-snapshot" }
 		maven { url "https://repo.spring.io/milestone" }
-		maven { url "http://dist.gemstone.com/maven/release" }
+		maven { url "https://commercial-repo.pivotal.io/data3/gemfire-release-repo/gemfire" }
 		maven { url "http://repo.springsource.org/simple/ext-release-local" }
 		maven { url "http://repo.spring.io/libs-release/" }
 	}
@@ -18,6 +18,13 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
+idea {
+	module {
+		downloadJavadoc = true
+		downloadSources = true
+	}
+}
+
 version = '0.0.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
@@ -27,24 +34,33 @@ repositories {
 	mavenCentral()
 	maven { url "https://repo.spring.io/libs-milestone" }
 	maven { url "https://repo.spring.io/milestone" }
-	maven { url "http://dist.gemstone.com/maven/release" }
+	maven { url "https://commercial-repo.pivotal.io/data3/gemfire-release-repo/gemfire" }
 	maven { url "http://repo.springsource.org/simple/ext-release-local" }
 	maven { url "http://repo.spring.io/libs-release/" }
 }
 
+compileJava.dependsOn(processResources)
 
 dependencies {
-	compile("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
-	compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
-	compile("org.springframework.data:spring-data-gemfire:$springDataGemfireVersion"){
+	compile("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"){
+		exclude module: 'spring-boot-starter-logging'
+	}
+	compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion"){
+		exclude module: 'spring-boot-starter-logging'
+	}
+	compile("org.springframework.data:spring-data-gemfire:2.0.2.RELEASE"){
 		exclude group: "io.pivotal.gemfire"
 	}
 	compile("io.pivotal.gemfire:geode-core:$gemfireVersion")
 	compile("io.pivotal.gemfire:geode-cq:$gemfireVersion")
 	compile("io.pivotal.gemfire:geode-wan:$gemfireVersion")
 	compile("io.pivotal.gemfire:geode-lucene:$gemfireVersion")
-	compile("io.pivotal.spring.cloud:spring-cloud-gemfire-spring-connector:$springConnectorVersion")
-	compile("io.pivotal.spring.cloud:spring-cloud-gemfire-cloudfoundry-connector:$cloudConnectorVersion")
+	compile ('org.apache.logging.log4j:log4j-slf4j-impl:2.10.0')
+	runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.8.0-alpha2'
+	runtime ('org.slf4j:jul-to-slf4j:1.8.0-alpha2')
 	runtime("com.h2database:h2:$h2Version")
-	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
+	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion"){
+		exclude module: 'spring-boot-starter-logging'
+	}
+	testCompile('com.github.stefanbirkner:system-rules:1.17.1')
 }
