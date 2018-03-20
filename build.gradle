@@ -25,7 +25,7 @@ idea {
 	}
 }
 
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -48,7 +48,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion"){
 		exclude module: 'spring-boot-starter-logging'
 	}
-	compile("org.springframework.data:spring-data-gemfire:2.0.2.RELEASE"){
+	compile("org.springframework.data:spring-data-gemfire:$springDataGemfireVersion"){
 		exclude group: "io.pivotal.gemfire"
 	}
 	compile("io.pivotal.gemfire:geode-core:$gemfireVersion")
@@ -56,8 +56,8 @@ dependencies {
 	compile("io.pivotal.gemfire:geode-wan:$gemfireVersion")
 	compile("io.pivotal.gemfire:geode-lucene:$gemfireVersion")
 	compile ('org.apache.logging.log4j:log4j-slf4j-impl:2.10.0')
-	runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.8.0-alpha2'
-	runtime ('org.slf4j:jul-to-slf4j:1.8.0-alpha2')
+	runtime ("org.slf4j:jcl-over-slf4j:$slf4jVersion")
+	runtime ("org.slf4j:jul-to-slf4j:$slf4jVersion")
 	runtime("com.h2database:h2:$h2Version")
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion"){
 		exclude module: 'spring-boot-starter-logging'

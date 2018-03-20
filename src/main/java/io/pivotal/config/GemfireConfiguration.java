@@ -23,33 +23,15 @@ import org.springframework.data.gemfire.config.annotation.*;
 import org.springframework.data.gemfire.repository.config.EnableGemfireRepositories;
 
 @Configuration
-@ClientCacheApplication(name = "GemFireSpringPizzaStoreApplication", durableClientId = "pizza-store", keepAlive = true, readyForEvents = true, subscriptionEnabled = true)
+@ClientCacheApplication(name = "GemFireSpringPizzaStoreApplication", durableClientId = "pizza-store",
+        keepAlive = true, readyForEvents = true, subscriptionEnabled = true,logLevel = "DEBUG")
 @EnableContinuousQueries(poolName = "DEFAULT")
 @EnableEntityDefinedRegions(basePackageClasses = {Pizza.class, Name.class})
 @EnableGemfireCaching
 @EnableGemfireRepositories("io.pivotal.repository.gemfire")
 @EnableSecurity
 @EnablePdx
+//@EnableClusterConfiguration(useHttp = true)
 public class GemfireConfiguration {
-//
-//    private static final String SECURITY_CLIENT = "security-client-auth-init";
-//    private static final String SECURITY_USERNAME = "security-username";
-//    private static final String SECURITY_PASSWORD = "security-password";
-//
-//    @Bean
-//    ClientCacheConfigurer clientCacheSecurityConfigurer() {
-//
-//        return (beanName, clientCacheFactoryBean) -> {
-//
-//
-//            for (URI locator : serviceInfo.getLocators()) {
-//                clientCacheFactoryBean.addLocators(new ConnectionEndpoint(locator.getHost(), locator.getPort()));
-//            }
-//
-//            clientCacheFactoryBean.setProperties(gemfireProperties);
-//            clientCacheFactoryBean.setPdxSerializer(
-////                    new ReflectionBasedAutoSerializer("io.pivotal.model.Pizza", "io.pivotal.model.Name"));
-////        };
-////    }
 
 }

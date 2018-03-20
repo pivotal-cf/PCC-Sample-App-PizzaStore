@@ -20,6 +20,8 @@ import org.apache.geode.pdx.PdxWriter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 @Region("Pizza")
@@ -61,11 +63,15 @@ public class Pizza implements PdxSerializable {
 
     @Override
     public void toData(PdxWriter writer) {
-
+        writer.writeString("name", this.name);
+        writer.writeStringArray("toppings", this.toppings.toArray(new String[toppings.size()]));
+        writer.writeString("sauce", this.sauce);
     }
 
     @Override
     public void fromData(PdxReader reader) {
-
+        this.name = reader.readString("name");
+        this.toppings = new HashSet<String>(Arrays.<String>asList(reader.readStringArray("toppings")));
+        this.sauce = reader.readString("sauce");
     }
 }

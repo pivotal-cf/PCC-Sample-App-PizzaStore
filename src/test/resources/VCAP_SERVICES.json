@@ -1,38 +1,52 @@
 {
-    "p-cloudcache": {
-      "distributed_system_id": "1",
-      "locators": [
-        "10.0.8.6[55221]",
-        "10.0.8.8[55221]",
-        "10.0.8.7[55221]"
-      ],
-      "urls": {
-        "gfsh": "https://cloudcache-84fa67cb-42ad-4d0f-8d72-9baea9a52100.sys.majuro.cf-app.com/gemfire/v1",
-        "pulse": "https://cloudcache-84fa67cb-42ad-4d0f-8d72-9baea9a52100.sys.majuro.cf-app.com/pulse"
-      },
-      "users": [
-        {
-          "password": "password",
-          "roles": [
-            "cluster_operator"
+    "p-cloudcache": [
+      {
+        "credentials": {
+          "distributed_system_id": "1",
+          "locators": [
+            "10.0.8.5[55221]"
           ],
-          "username": "cluster_operator_yEpXjxEwKtdLP6uxahWMg"
-        },
-        {
-          "password": "devpassword",
-          "roles": [
-            "developer"
+          "urls": {
+            "gfsh": "https://cloudcache-d34e6cb1-69ae-473e-a826-1b1bf16c288f.sys.paris.cf-app.com/gemfire/v1",
+            "pulse": "https://cloudcache-d34e6cb1-69ae-473e-a826-1b1bf16c288f.sys.paris.cf-app.com/pulse"
+          },
+          "users": [
+            {
+              "password": "SzLybigiikLUA5ts5m7uvg",
+              "roles": [
+                "cluster_operator"
+              ],
+              "username": "cluster_operator_WbvPTaIoqyVsoV6tY1g"
+            },
+            {
+              "password": "OhERGnAYkP3hXOgIaXr2jQ",
+              "roles": [
+                "developer"
+              ],
+              "username": "developer_FV8DJO271i87GIvisHuw"
+            }
           ],
-          "username": "developer_j4f2fnbrofqLXANm8FeRQ"
-        }
-      ],
-      "wan": {
-        "sender_credentials": {
-          "active": {
-            "password": "senderpassword",
-            "username": "gateway_sender_hitNFp8dqWAZAaPGPSuhZg"
+          "wan": {
+            "sender_credentials": {
+              "active": {
+                "password": "kin9qXk0x38cBYEWBMK0w",
+                "username": "gateway_sender_PIjlrRCYsNHgMQtN6jjFJg"
+              }
+            }
           }
-        }
+        },
+        "label": "p-cloudcache",
+        "name": "dev0",
+        "plan": "dev-plan",
+        "provider": null,
+        "syslog_drain_url": null,
+        "tags": [
+          "gemfire",
+          "cloudcache",
+          "database",
+          "pivotal"
+        ],
+        "volume_mounts": []
       }
-    }
+    ]
 }

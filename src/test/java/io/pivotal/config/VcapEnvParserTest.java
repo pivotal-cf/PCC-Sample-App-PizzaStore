@@ -27,7 +27,8 @@ public class VcapEnvParserTest {
 
     @Rule
     public final ProvideSystemProperty myProp = new ProvideSystemProperty(
-            "VCAP_SERVICES",new String(Files.readAllBytes(Paths.get("src/test/resources/VCAP_SERVICES.json")),"UTF-8"));
+            "VCAP_SERVICES",new String(Files.readAllBytes(Paths.get(
+                    "src/test/resources/VCAP_SERVICES.json")),"UTF-8"));
 
 
     public VcapEnvParserTest() throws IOException {
