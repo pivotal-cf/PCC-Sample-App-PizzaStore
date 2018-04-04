@@ -31,7 +31,6 @@ import org.springframework.data.gemfire.repository.config.EnableGemfireRepositor
 @EnableGemfireRepositories("io.pivotal.repository.gemfire")
 @EnableSecurity
 @EnablePdx
-//@EnableClusterConfiguration(useHttp = true)
 public class GemfireConfiguration {
 
 }

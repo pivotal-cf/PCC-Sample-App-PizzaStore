@@ -27,8 +27,8 @@ idea {
 
 version = '1.0.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 10
+targetCompatibility = 10
 
 repositories {
 	mavenCentral()
@@ -55,12 +55,12 @@ dependencies {
 	compile("io.pivotal.gemfire:geode-cq:$gemfireVersion")
 	compile("io.pivotal.gemfire:geode-wan:$gemfireVersion")
 	compile("io.pivotal.gemfire:geode-lucene:$gemfireVersion")
-	compile ('org.apache.logging.log4j:log4j-slf4j-impl:2.10.0')
+	compile ("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
 	runtime ("org.slf4j:jcl-over-slf4j:$slf4jVersion")
 	runtime ("org.slf4j:jul-to-slf4j:$slf4jVersion")
 	runtime("com.h2database:h2:$h2Version")
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion"){
 		exclude module: 'spring-boot-starter-logging'
 	}
-	testCompile('com.github.stefanbirkner:system-rules:1.17.1')
+	testCompile("com.github.stefanbirkner:system-rules:1.17.1")
 }
