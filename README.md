@@ -12,7 +12,15 @@ Steps.
 1. Bind the application with a Pivotal Cloud Cache (PCC) service instance using command `cf bind-service APP_NAME SERVICE_INSTANCE [-c PARAMETERS_AS_JSON]`. If service instance is not created create that using `cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE`
 Once application is deployed, hit the REST endpoint `<url>/healthcheck` and you should see a 200 response code, if request was successful.
 
-## About the sample application  
+#### Creating the Regions
+
+Before starting the app, you will need to create the regions using gfsh.
+After standing up the service and creating the service key, connect to the cluster via gfsh. The type doesn't matter so it can be changed.
+
+`create region --name=Pizza --type=PARTITION_REDUNDANT`
+`create region --name=Name --type=PARTITION_REDUNDANT`
+
+## About the Sample Application
 Pivotal Cloud Cache (PCC) is a high-performance, high-availability caching layer for Pivotal Cloud Foundry (PCF). This is a sample application which uses PCC as a provider of NoSQL store to a Spring Boot application. 
 This application is a Pizza store application that can be used to create Pizzas with different sauces.
 All the Pizzas are stored in PCC clusters. It uses Spring Repository abstractions.
@@ -26,10 +34,16 @@ Both use the Repository pattern to write to PCC.
  
 The application leverages Spring controllers that expose operations you can perform over REST.
 
+
 #### REST API endpoints
 
- 1. `/healthcheck` - Does `save()` and `findById()` on Pizza region to check if everything is setup properly. It creates 2 types of Pizzas, a Plain Pizza with *red* sauce and chicken Pizza with *white* sauce.
- 1. `/pestoOrder/{name}` - Creates a Pizza with chicken and `pesto` sauce. 
+ * `/healthcheck` - Does `save()` and `findById()` on Pizza region to check if everything is setup properly. It creates 2 types of Pizzas, a Plain Pizza with *red* sauce and chicken Pizza with *white* sauce.
+
+  `curl -k https://cloudcache-pizza-store.cfapps.io/healthcheck`
+
+ * `/pestoOrder/{name}` - Creates a Pizza with chicken and `pesto` sauce.
+
+ `curl -k https://cloudcache-pizza-store.cfapps.io/pestoOrder/myPizza`
 
 #### Continuous Query 
 
