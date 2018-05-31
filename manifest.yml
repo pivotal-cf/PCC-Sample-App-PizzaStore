@@ -1,6 +1,4 @@
 ---
 applications:
 - name: cloudcache-pizza-store
-  path: build/libs/cloudcache-pizza-store-1.0.0-SNAPSHOT.jar
-  services:
-  - dev0
+  path: build/libs/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
