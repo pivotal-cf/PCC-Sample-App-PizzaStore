@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package io.pivotal.controller;
+package io.pivotal.cloudcache.app.controller;
 
 import java.util.Optional;
 
@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.pivotal.model.Pizza;
-import io.pivotal.repository.gemfire.PizzaRepository;
+import io.pivotal.cloudcache.app.model.Pizza;
+import io.pivotal.cloudcache.app.repository.PizzaRepository;
 
 @RestController
 public class AppController {

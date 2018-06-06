@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package io.pivotal.config;
+package io.pivotal.cloudcache.app.config;
 
 
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ import org.springframework.data.gemfire.config.annotation.EnableLogging;
 import org.springframework.geode.config.annotation.EnableDurableClient;
 import org.springframework.geode.config.annotation.UseMemberName;
 
-import io.pivotal.model.Pizza;
+import io.pivotal.cloudcache.app.model.Pizza;
 
 @Configuration
 //@EnableClusterConfiguration(useHttp = true)

@@ -12,12 +12,12 @@
  * limitations under the License.
  */
 
-package io.pivotal.repository.gemfire;
+package io.pivotal.cloudcache.app.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import io.pivotal.model.Name;
+import io.pivotal.cloudcache.app.model.Name;
 
 @Repository
 public interface NameRepository extends CrudRepository<Name, String> {

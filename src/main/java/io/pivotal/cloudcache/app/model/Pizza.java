@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package io.pivotal.model;
+package io.pivotal.cloudcache.app.model;
 
 import java.util.Arrays;
 import java.util.HashSet;
