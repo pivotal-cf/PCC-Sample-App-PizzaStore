@@ -14,43 +14,69 @@
 
 package io.pivotal.cloudcache.app.controller;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.apache.geode.LogWriter;
-import org.apache.geode.cache.client.ClientCache;
+import org.apache.geode.cache.GemFireCache;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.pivotal.cloudcache.app.model.Pizza;
+import io.pivotal.cloudcache.app.repository.NameRepository;
 import io.pivotal.cloudcache.app.repository.PizzaRepository;
 
 @RestController
+@SuppressWarnings("unused")
 public class AppController {
 
-    private ClientCache gemfireCache;
+    private GemFireCache gemfireCache;
+
+    private NameRepository nameRepository;
 
     private PizzaRepository pizzaRepository;
 
-    public AppController(ClientCache gemfireCache, PizzaRepository pizzaRepository) {
+    public AppController(GemFireCache gemfireCache, NameRepository nameRepository, PizzaRepository pizzaRepository) {
+
         this.gemfireCache = gemfireCache;
+        this.nameRepository = nameRepository;
         this.pizzaRepository = pizzaRepository;
     }
 
-    @RequestMapping("/healthcheck")
-    public ResponseEntity<Object> healthCheck() {
+    @GetMapping("/nukeAndPave")
+    public String nukeAndPave() {
+
+        this.nameRepository.deleteAll();
+        this.pizzaRepository.deleteAll();
+
+        return "<h1>OVEN EMPTY!</h1>";
+    }
+
+    @GetMapping("/ping")
+    public String ping() {
+        return "<h1>PONG!</h1>";
+    }
+
+    @RequestMapping("/preheatOven")
+    public ResponseEntity<Object> preheatOven() {
 
         LogWriter logger = gemfireCache.getLogger();
 
         Pizza plainPizza = makePlainPizza();
         Pizza fancyPizza = makeFancyPizza();
+        Pizza superFancyPizza = makeSuperFancyPizza("test");
 
         this.pizzaRepository.save(plainPizza);
         this.pizzaRepository.save(fancyPizza);
+        this.pizzaRepository.save(superFancyPizza);
 
-        logger.info("Finished inserting the pizzas");
+        logger.info("Finished baking pizzas");
 
         Optional<Pizza> pizza = this.pizzaRepository.findById("plain");
 
@@ -66,7 +92,7 @@ public class AppController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (pizza.filter(it -> it.has(Pizza.Topping.CHEESE)).isPresent()) {
+        if (!pizza.filter(it -> it.has(Pizza.Topping.CHEESE)).isPresent()) {
 
             logger.info(String.format("Where's my cheese? Pizza was [%s]",
                 pizza.map(Pizza::toString).orElse(null)));
@@ -74,15 +100,47 @@ public class AppController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("<h1>OVEN HEATED!</h1>", HttpStatus.OK);
     }
 
-    @RequestMapping("/pestoOrder/{name}")
-    public ResponseEntity<Object> pestoOrder(@PathVariable("name") String name) {
+    @GetMapping("/pizzas")
+    public Object getPizzas() {
+
+        Iterable<Pizza> pizzas = this.pizzaRepository.findAll();
+
+        return nullSafeIterable(pizzas).iterator().hasNext() ? pizzas : "<h1>No Pizzas Found</h1>";
+    }
+
+    @GetMapping("/pizzas/{name}")
+    public Object getNamedPizza(@PathVariable("name") String name) {
+
+        Pizza namedPizza = this.pizzaRepository.findById(name).orElse(null);
+
+        return namedPizza != null ? namedPizza : String.format("<h1>Pizza [%s] Not Found</h1>", name);
+    }
+
+    @GetMapping("/pizzas/order/{name}")
+    public String order(@PathVariable("name") String name,
+            @RequestParam(name = "sauce", defaultValue = "TOMATO") Pizza.Sauce pizzaSauce,
+            @RequestParam(name = "toppings", defaultValue = "CHEESE") Pizza.Topping[] toppings) {
+
+        Pizza namedPizza = Pizza.named(name).having(pizzaSauce);
+
+        Arrays.stream(toppings).forEach(namedPizza::with);
+
+        this.pizzaRepository.save(namedPizza);
+
+        return String.format("<h1>Pizza [%s] Ordered</h1>", namedPizza);
+    }
+
+
+    // Technically, this should be a POST, but...
+    @GetMapping("/pizzas/pestoOrder/{name}")
+    public String pestoOrder(@PathVariable("name") String name) {
 
         this.pizzaRepository.save(makeSuperFancyPizza(name));
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return String.format("<h1>Pesto Pizza [%s] Ordered</h1>", name);
     }
 
     private Pizza makeFancyPizza() {
@@ -106,8 +164,7 @@ public class AppController {
             .with(Pizza.Topping.CHERRY_TOMATOES);
     }
 
-    @RequestMapping("/pizza")
-    public Pizza getPlainPizza() {
-        return this.pizzaRepository.findById("plain").orElse(null);
+    private <T> Iterable<T> nullSafeIterable(Iterable<T> iterable) {
+        return iterable != null ? iterable : Collections::emptyIterator;
     }
 }
