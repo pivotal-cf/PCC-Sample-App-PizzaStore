@@ -14,28 +14,34 @@
 
 package io.pivotal.continuousQuery;
 
+import java.util.Optional;
+
+import org.apache.geode.cache.query.CqEvent;
+import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
+import org.springframework.stereotype.Component;
+
 import io.pivotal.model.Name;
 import io.pivotal.model.Pizza;
 import io.pivotal.repository.gemfire.NameRepository;
-import org.apache.geode.cache.query.CqEvent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
-import org.springframework.stereotype.Component;
 
 @Component
 public class PizzaQuery {
 
-    private NameRepository repository;
+    private final NameRepository nameRepository;
 
-    @Autowired
-    public PizzaQuery(NameRepository respository) {
-        this.repository = respository;
+    public PizzaQuery(NameRepository nameRepository) {
+        this.nameRepository = nameRepository;
     }
 
-    @ContinuousQuery(name = "PestoQuery", query = "SELECT * FROM /Pizza WHERE sauce = 'pesto'", durable = true)
-    public void handlePizzaChanges(CqEvent event) {
+    @ContinuousQuery(name = "PestoQuery", durable = true,
+        query = "SELECT * FROM /Pizza WHERE sauce = 'PESTO'")
+    public void handlePestoPizzaOrder(CqEvent event) {
 
-        repository.save( new Name(((Pizza) event.getNewValue()).getName()));
+        Optional.ofNullable(event)
+            .map(CqEvent::getNewValue)
+            .map(newValue -> ((Pizza) newValue).getName())
+            .map(Name::of)
+            .ifPresent(this.nameRepository::save);
     }
 }
 
