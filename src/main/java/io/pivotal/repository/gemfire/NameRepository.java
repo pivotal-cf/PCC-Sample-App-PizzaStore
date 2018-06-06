@@ -14,10 +14,11 @@
 
 package io.pivotal.repository.gemfire;
 
-import io.pivotal.model.Name;
-import org.springframework.data.gemfire.repository.GemfireRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import io.pivotal.model.Name;
+
 @Repository
-public interface NameRepository extends GemfireRepository<Name, String> {
+public interface NameRepository extends CrudRepository<Name, String> {
 }
