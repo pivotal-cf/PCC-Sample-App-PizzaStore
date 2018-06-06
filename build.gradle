@@ -13,6 +13,10 @@ apply plugin: 'eclipse'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.springframework.boot'
 
+bootJar {
+	mainClassName = 'io.pivotal.cloudcache.app.CloudcachePizzaStoreApplication'
+}
+
 idea {
 	module {
 		downloadJavadoc = true
@@ -47,9 +51,10 @@ dependencies {
 
 	compile ("org.apache.logging.log4j:log4j-slf4j-impl")
 
+	runtime "com.h2database:h2"
 	runtime "org.slf4j:jcl-over-slf4j"
 	runtime "org.slf4j:jul-to-slf4j"
-	runtime "com.h2database:h2"
+	runtime "org.springframework.shell:spring-shell:$springShellVersion"
 
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion"){
 		exclude module: 'spring-boot-starter-logging'
