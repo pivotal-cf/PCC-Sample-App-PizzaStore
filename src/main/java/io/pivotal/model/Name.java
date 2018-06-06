@@ -14,38 +14,22 @@
 
 package io.pivotal.model;
 
-import org.apache.geode.pdx.PdxReader;
-import org.apache.geode.pdx.PdxSerializable;
-import org.apache.geode.pdx.PdxWriter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 @Region("Name")
-public class Name implements PdxSerializable {
-    @Id
-    String name;
+@EqualsAndHashCode(of = "name")
+@ToString(of = "name")
+@RequiredArgsConstructor(staticName = "of")
+public class Name {
 
-    public Name(String name) {
-        this.name = name;
-    }
+    @Getter @Id @NonNull
+    private final String name;
 
-    /**
-     * Needed for {@link PdxSerializable}
-     */
-    public Name() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void toData(PdxWriter writer) {
-        writer.writeString("name", this.name);
-    }
-
-    @Override
-    public void fromData(PdxReader reader) {
-        this.name = reader.readString("name");
-    }
 }
