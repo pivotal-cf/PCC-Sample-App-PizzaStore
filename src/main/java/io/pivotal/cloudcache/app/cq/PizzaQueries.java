@@ -25,23 +25,34 @@ import io.pivotal.cloudcache.app.model.Pizza;
 import io.pivotal.cloudcache.app.repository.NameRepository;
 
 @Component
-public class PizzaQuery {
+@SuppressWarnings("unused")
+public class PizzaQueries {
 
     private final NameRepository nameRepository;
 
-    public PizzaQuery(NameRepository nameRepository) {
+    public PizzaQueries(NameRepository nameRepository) {
         this.nameRepository = nameRepository;
     }
 
-    @ContinuousQuery(name = "PestoQuery", durable = true,
-        query = "SELECT * FROM /Pizza WHERE sauce = 'PESTO'")
+    @ContinuousQuery(name = "AllPizzaOrder", query="SELECT * FROM /Pizza")
+    public void handleAnyPizzaOrder(CqEvent event) {
+        System.err.printf("PIZZA [%s]%n", event.getNewValue());
+    }
+
+    @ContinuousQuery(name = "PestoPizzaOrdersQuery", durable = true,
+        query = "SELECT * FROM /Pizza p WHERE p.sauce.name() = 'PESTO'")
     public void handlePestoPizzaOrder(CqEvent event) {
 
         Optional.ofNullable(event)
             .map(CqEvent::getNewValue)
-            .map(newValue -> ((Pizza) newValue).getName())
+            .filter(newValue -> newValue instanceof Pizza)
+            .map(newValue -> (Pizza) newValue)
+            .map(Pizza::getName)
+            .map(pizzaName -> {
+                System.err.printf("Pesto Pizza [%s] Ordered%n", pizzaName);
+                return pizzaName;
+            })
             .map(Name::of)
             .ifPresent(this.nameRepository::save);
     }
 }
-
