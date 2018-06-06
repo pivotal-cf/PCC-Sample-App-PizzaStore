@@ -14,93 +14,100 @@
 
 package io.pivotal.controller;
 
-import io.pivotal.model.Pizza;
-import io.pivotal.repository.gemfire.PizzaRepository;
+import java.util.Optional;
+
 import org.apache.geode.LogWriter;
 import org.apache.geode.cache.client.ClientCache;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
-import java.util.Set;
+import io.pivotal.model.Pizza;
+import io.pivotal.repository.gemfire.PizzaRepository;
 
 @RestController
-@DependsOn({"gemfireCache", "Pizza"})
 public class AppController {
 
     private ClientCache gemfireCache;
-    private PizzaRepository repository;
 
-    @Autowired
+    private PizzaRepository pizzaRepository;
+
     public AppController(ClientCache gemfireCache, PizzaRepository pizzaRepository) {
         this.gemfireCache = gemfireCache;
-        this.repository = pizzaRepository;
+        this.pizzaRepository = pizzaRepository;
     }
 
     @RequestMapping("/healthcheck")
     public ResponseEntity<Object> healthCheck() {
+
         LogWriter logger = gemfireCache.getLogger();
 
         Pizza plainPizza = makePlainPizza();
         Pizza fancyPizza = makeFancyPizza();
-        repository.save(plainPizza);
-        repository.save(fancyPizza);
+
+        this.pizzaRepository.save(plainPizza);
+        this.pizzaRepository.save(fancyPizza);
 
         logger.info("Finished inserting the pizzas");
 
-        Pizza found = repository.findById("plain").get();
-        if (found == null) {
+        Optional<Pizza> pizza = this.pizzaRepository.findById("plain");
+
+        if (!pizza.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if (!found.getToppings().contains("cheese")) {
-            logger.info("Where's my cheese? This is the pizza: " + found.toString());
+
+        if (!pizza.filter(it -> it.uses(Pizza.Sauce.TOMATO)).isPresent()) {
+
+            logger.info(String.format("I ordered tomato sauce; Pizza was [%s]",
+                pizza.map(Pizza::toString).orElse(null)));
+
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (!found.getSauce().equals("red")) {
-            logger.info("I ordered red sauce!! This is the pizza: " + found.toString());
+
+        if (pizza.filter(it -> it.has(Pizza.Topping.CHEESE)).isPresent()) {
+
+            logger.info(String.format("Where's my cheese? Pizza was [%s]",
+                pizza.map(Pizza::toString).orElse(null)));
+
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping("/pestoOrder/{name}")
     public ResponseEntity<Object> pestoOrder(@PathVariable("name") String name) {
 
-        Pizza pestoPizza = makeSuperFancyPizza(name);
-        repository.save(pestoPizza);
+        this.pizzaRepository.save(makeSuperFancyPizza(name));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private Pizza makeFancyPizza() {
-        Set<String> toppings = new HashSet<>();
-        toppings.add("chicken");
-        toppings.add("arugula");
-        return new Pizza("fancy", toppings, "white");
+
+        return Pizza.named("fancy")
+            .having(Pizza.Sauce.ALFREDO)
+            .with(Pizza.Topping.ARUGULA)
+            .with(Pizza.Topping.CHICKEN);
     }
 
     private Pizza makePlainPizza() {
-        Set<String> toppings = new HashSet<>();
-        toppings.add("cheese");
-        return new Pizza("plain", toppings, "red");
+        return Pizza.named("plain").with(Pizza.Topping.CHEESE);
     }
 
     private Pizza makeSuperFancyPizza(String name) {
-        Set<String> toppings = new HashSet<>();
-        toppings.add("chicken");
-        toppings.add("parmesan");
-        toppings.add("cherry tomatoes");
-        return new Pizza(name, toppings, "pesto");
+
+        return Pizza.named(name)
+            .having(Pizza.Sauce.PESTO)
+            .with(Pizza.Topping.CHICKEN)
+            .with(Pizza.Topping.PARMESAN)
+            .with(Pizza.Topping.CHERRY_TOMATOES);
     }
 
     @RequestMapping("/pizza")
-    public Pizza getPizza() {
-        Pizza found = repository.findById("plain").get();
-        return found;
+    public Pizza getPlainPizza() {
+        return this.pizzaRepository.findById("plain").orElse(null);
     }
 }
