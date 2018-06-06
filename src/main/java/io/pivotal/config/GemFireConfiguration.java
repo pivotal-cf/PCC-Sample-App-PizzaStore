@@ -15,22 +15,20 @@
 package io.pivotal.config;
 
 
-import io.pivotal.model.Name;
-import io.pivotal.model.Pizza;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.gemfire.cache.config.EnableGemfireCaching;
-import org.springframework.data.gemfire.config.annotation.*;
-import org.springframework.data.gemfire.repository.config.EnableGemfireRepositories;
+import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
+import org.springframework.data.gemfire.config.annotation.EnableLogging;
+import org.springframework.geode.config.annotation.EnableDurableClient;
+import org.springframework.geode.config.annotation.UseMemberName;
+
+import io.pivotal.model.Pizza;
 
 @Configuration
-@ClientCacheApplication(name = "GemFireSpringPizzaStoreApplication", durableClientId = "pizza-store",
-        keepAlive = true, readyForEvents = true, subscriptionEnabled = true,logLevel = "DEBUG")
-@EnableContinuousQueries(poolName = "DEFAULT")
-@EnableEntityDefinedRegions(basePackageClasses = {Pizza.class, Name.class})
-@EnableGemfireCaching
-@EnableGemfireRepositories("io.pivotal.repository.gemfire")
-@EnableSecurity
-@EnablePdx
-public class GemfireConfiguration {
+//@EnableClusterConfiguration(useHttp = true)
+@EnableDurableClient(id = "pizza-store")
+@EnableEntityDefinedRegions(basePackageClasses = Pizza.class)
+@EnableLogging(logLevel = "DEBUG")
+@UseMemberName("SpringBootPivotalCloudCachePizzaStoreApplication")
+public class GemFireConfiguration {
 
 }
