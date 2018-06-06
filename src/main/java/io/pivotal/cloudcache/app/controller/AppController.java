@@ -36,11 +36,11 @@ import io.pivotal.cloudcache.app.repository.PizzaRepository;
 @SuppressWarnings("unused")
 public class AppController {
 
-    private GemFireCache gemfireCache;
+    private final GemFireCache gemfireCache;
 
-    private NameRepository nameRepository;
+    private final NameRepository nameRepository;
 
-    private PizzaRepository pizzaRepository;
+    private final PizzaRepository pizzaRepository;
 
     public AppController(GemFireCache gemfireCache, NameRepository nameRepository, PizzaRepository pizzaRepository) {
 
