@@ -14,64 +14,92 @@
 
 package io.pivotal.model;
 
-import org.apache.geode.pdx.PdxReader;
-import org.apache.geode.pdx.PdxSerializable;
-import org.apache.geode.pdx.PdxWriter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Region("Pizza")
-public class Pizza implements PdxSerializable {
-    @Id
-    String name;
-    Set<String> toppings;
-    String sauce;
+@RequiredArgsConstructor(staticName = "named")
+@EqualsAndHashCode(of = { "name", "sauce", "toppings"})
+public class Pizza {
 
-    public Pizza(String name, Set toppings, String sauce) {
-        this.name = name;
-        this.toppings = toppings;
-        this.sauce = sauce;
+    private static final Sauce DEFAULT_SAUCE = Sauce.TOMATO;
+
+    @Getter
+    private Set<Topping> toppings = new HashSet<>();
+
+    @Getter @Id @NonNull
+    private final String name;
+
+    @Getter
+    private Sauce sauce = DEFAULT_SAUCE;
+
+    public boolean has(Topping topping) {
+        return this.toppings.contains(topping);
     }
 
-    public Pizza() {
+    public boolean uses(Sauce sauce) {
+        return this.sauce.equals(sauce);
+    }
+
+    public Pizza having(Sauce sauce) {
+        this.sauce = Optional.ofNullable(sauce).orElse(DEFAULT_SAUCE);
+        return this;
+    }
+
+    public Pizza with(Topping topping) {
+
+        Optional.ofNullable(topping)
+            .ifPresent(this.toppings::add);
+
+        return this;
     }
 
     @Override
     public String toString() {
-        return "Pizza{" +
-                "name='" + name + '\'' +
-                ", toppings=" + toppings +
-                ", sauce='" + sauce + '\'' +
-                '}';
+
+        return String.format("%1$s Pizza having %2$s Sauce with Toppings %3$s",
+            getName(), getSauce(), Arrays.toString(getToppings().toArray()));
     }
 
-    public String getName() {
-        return name;
+    public enum Sauce {
+
+        ALFREDO,
+        BARBECUE,
+        HUMMUS,
+        MARINARA,
+        PESTO,
+        TAPENADE,
+        TOMATO,
+
     }
 
-    public Set<String> getToppings() {
-        return toppings;
-    }
+    public enum Topping {
 
-    public String getSauce() {
-        return sauce;
-    }
+        ARUGULA,
+        BACON,
+        BANANA_PEPPERS,
+        BLACK_OLIVES,
+        CHEESE,
+        CHERRY_TOMATOES,
+        CHICKEN,
+        GREEN_OLIVES,
+        GREEN_PEPPERS,
+        JALAPENO,
+        MUSHROOM,
+        ONIONS,
+        PARMESAN,
+        PEPPERONI,
+        SAUSAGE,
 
-    @Override
-    public void toData(PdxWriter writer) {
-        writer.writeString("name", this.name);
-        writer.writeStringArray("toppings", this.toppings.toArray(new String[toppings.size()]));
-        writer.writeString("sauce", this.sauce);
-    }
-
-    @Override
-    public void fromData(PdxReader reader) {
-        this.name = reader.readString("name");
-        this.toppings = new HashSet<String>(Arrays.<String>asList(reader.readStringArray("toppings")));
-        this.sauce = reader.readString("sauce");
     }
 }
