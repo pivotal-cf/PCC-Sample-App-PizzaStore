@@ -27,8 +27,9 @@ import io.pivotal.cloudcache.app.model.Pizza;
 //@EnableClusterConfiguration(useHttp = true)
 @EnableDurableClient(id = "pizza-store")
 @EnableEntityDefinedRegions(basePackageClasses = Pizza.class)
-@EnableLogging(logLevel = "DEBUG")
+@EnableLogging(logLevel = "info")
 @UseMemberName("SpringBootPivotalCloudCachePizzaStoreApplication")
+@SuppressWarnings("unused")
 public class GemFireConfiguration {
 
 }
