@@ -14,10 +14,11 @@
 
 package io.pivotal.repository.gemfire;
 
-import io.pivotal.model.Pizza;
-import org.springframework.data.gemfire.repository.GemfireRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import io.pivotal.model.Pizza;
+
 @Repository
-public interface PizzaRepository extends GemfireRepository<Pizza, String> {
+public interface PizzaRepository extends CrudRepository<Pizza, String> {
 }
