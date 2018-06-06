@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package io.pivotal.continuousQuery;
+package io.pivotal.cloudcache.app.cq;
 
 import java.util.Optional;
 
@@ -20,9 +20,9 @@ import org.apache.geode.cache.query.CqEvent;
 import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
 import org.springframework.stereotype.Component;
 
-import io.pivotal.model.Name;
-import io.pivotal.model.Pizza;
-import io.pivotal.repository.gemfire.NameRepository;
+import io.pivotal.cloudcache.app.model.Name;
+import io.pivotal.cloudcache.app.model.Pizza;
+import io.pivotal.cloudcache.app.repository.NameRepository;
 
 @Component
 public class PizzaQuery {
