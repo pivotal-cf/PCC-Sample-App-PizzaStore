@@ -47,7 +47,7 @@ dependencies {
 
 	compile "org.projectlombok:lombok"
 
-	compile "org.springframework.geode:gemfire-spring-boot-starter:$springBootDataGemFireVersion"
+	compile "org.springframework.geode:spring-gemfire-starter:$springBootDataGemFireVersion"
 
 	compile ("org.apache.logging.log4j:log4j-slf4j-impl")
 
