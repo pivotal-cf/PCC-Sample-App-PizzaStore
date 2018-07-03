@@ -22,4 +22,5 @@ build/
 nbbuild/
 dist/
 nbdist/
-.nb-gradle/.*.swp
+.nb-gradle/
+.*.swp

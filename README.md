@@ -31,10 +31,11 @@ After standing up the PCC service and creating a service key, connect to the clu
 1. Start the GemFire shell: `$ gfsh`
 1. Start a locator: `gfsh>start locator --name=locator1`
 1. Start a server: `gfsh>start server --name=server1 --server-port=40411`
+1. Configure PDX: `gfsh>configure pdx --disk-store=DEFAULT`
 1. Create the GemFire regions:
    ```
-   gfsh>create region --name=Pizza --type=PARTITION_REDUNDANT`
-   gfsh>create region --name=Name --type=PARTITION_REDUNDANT`
+   gfsh>create region --name=Pizza --type=PARTITION_PERSISTENT_OVERFLOW
+   gfsh>create region --name=Name --type=PARTITION_PERSISTENT_OVERFLOW
    ```
 1. Set up the environment: `$ export VCAP_APPLICATION=$( cat ./VCAP_APPLICATION.json ) ; export VCAP_SERVICES=$( cat ./VCAP_SERVICES.json )`
 1. Start the app: `$ java -jar ./build/libs/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar`
