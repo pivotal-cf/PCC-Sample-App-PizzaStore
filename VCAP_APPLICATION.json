@@ -1,0 +1,22 @@
+{
+  "application_id": "b6b8b253-0695-44a2-94c4-366e55fa48a3",
+  "application_name": "pizza-store",
+  "application_uris": [
+   "pizza-store.localhost.localdomain"
+  ],
+  "application_version": "ed0b6a90-d71e-4eaa-bf9a-ca5c55e32984",
+  "cf_api": "https://api.somepcf.org",
+  "limits": {
+   "disk": 1024,
+   "fds": 16384,
+   "mem": 1024
+  },
+  "name": "pizza-store",
+  "space_id": "1f63b79f-1332-4aed-8fa0-a2ff8e61f525",
+  "space_name": "development",
+  "uris": [
+   "pizza-store.localhost.localdomain"
+  ],
+  "users": null,
+  "version": "ed0b6a90-d71e-4eaa-bf9a-ca5c55e32984"
+}
