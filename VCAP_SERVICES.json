@@ -1,0 +1,54 @@
+{
+  "p-cloudcache": [
+   {
+    "binding_name": null,
+    "credentials": {
+     "distributed_system_id": "0",
+     "locators": [
+      "192.168.1.6[10334]"
+     ],
+     "urls": {
+      "gfsh": "https://cloudcache-ef3340f8-4e0b-4b79-bdd7-454cd5b87d4a.run.pcfbeta.io/gemfire/v1",
+      "pulse": "https://cloudcache-ef3340f8-4e0b-4b79-bdd7-454cd5b87d4a.run.pcfbeta.io/pulse"
+     },
+     "users": [
+      {
+       "password": "qr6nIz4FPrlAU8r9gICGg",
+       "roles": [
+        "developer"
+       ],
+       "username": "developer_yqfEY8XBb9EiE9wBpRhRSg"
+      },
+      {
+       "password": "qVbbEzkE9AhunHIfXt4tg",
+       "roles": [
+        "cluster_operator"
+       ],
+       "username": "cluster_operator_jmv7LKSXDR9gYalvUvX2Q"
+      }
+     ],
+     "wan": {
+      "sender_credentials": {
+       "active": {
+        "password": "8mzpPDW5KC8UJHVn7pnQ",
+        "username": "gateway_sender_SbrOkhDnCWiecDZgqiYkSg"
+       }
+      }
+     }
+    },
+    "instance_name": "pcc-retail",
+    "label": "p-cloudcache",
+    "name": "pcc-retail",
+    "plan": "extra-small",
+    "provider": null,
+    "syslog_drain_url": null,
+    "tags": [
+     "gemfire",
+     "cloudcache",
+     "database",
+     "pivotal"
+     ],
+    "volume_mounts": []
+   }
+  ]
+}
