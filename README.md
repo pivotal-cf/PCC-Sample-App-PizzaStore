@@ -4,7 +4,7 @@ Sample Spring Boot application for Pivotal Cloud Cache.
 
 ## How to run on Pivotal Cloud Foundry (PCF)
 
-This is a Spring Boot application, which can pushed to **Pivotal Cloud Foundry (PCF)** using the `cf push` command.
+This is a Spring Boot application, which can be pushed to **Pivotal Cloud Foundry (PCF)** using the `cf push` command.
 This app demonstrates a few of **Pivotal Cloud Cache’s (PCC)** interesting features.
 
 Steps:
@@ -28,7 +28,7 @@ After standing up the PCC service and creating a service key, connect to the clu
 ## About the Sample Spring Boot Application
 
 *Pivotal Cloud Cache (PCC)* is a high-performance, high-availability caching layer for *Pivotal Cloud Foundry (PCF)*.
-This is sample Spring Boot application uses PCC as a caching provider and event source.
+This is a sample Spring Boot application which uses PCC as a caching provider and event source.
 
 This Spring Boot application implements a Pizza Store that can be used to order `Pizzas` with different sauces and toppings.
 
@@ -63,7 +63,7 @@ when accessing this app from your Web browser.
 
  `curl -k https://cloudcache-pizza-store.cfapps.io/ping`
 
- * `GET /preheatOven` - Loads the "_Pizza_" `Region` wkith pre-baked pizzas that can be queried with `/pizzas`.
+ * `GET /preheatOven` - Loads the "_Pizza_" `Region` with pre-baked pizzas that can be queried with `/pizzas`.
  This REST API endpoint calls `Repository.save()` for each pre-baked `Pizza` and verifies the pizzas
  with the `Repository.findById(..)` on "_Pizza_" `Region` to verify that everything was setup properly.
  It creates 3 types of pizzas: a Plain Pizza with Tomato Sauce and Cheese Topping, a Alfredo, Chicken, Arugula Pizza
@@ -97,7 +97,7 @@ Whenever any Pizza is ordered, then the event is logged to `System.err`.
 And, when any Pesto Pizza is ordered, then the CQ event with the name of the Pizza is written to the "_Name_" `Region`.
 
 PCC/Pivotal GemFire supports the notion of **Continuous Query**, which means a developer can register interests in events.
-Interests are expressed with an OQL query on `Regions` contaning the data interests.  This is ideal since the developer
+Interests are expressed with an OQL query on `Regions` containing the data interests.  This is ideal since the developer
 can use complex criteria in a OQL query predicate with the exact data the developer is interested in receiving notifications for.
 Thus, when data event occurs matching the conditions expressed in the CQ query predicate, then an event will be returned with
 the data.
