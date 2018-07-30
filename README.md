@@ -22,8 +22,10 @@ Before starting the Spring Boot application, you will need to create the Regions
 
 After standing up the PCC service and creating a service key, connect to the cluster via _Gfsh_.
 
-`create region --name=Pizza --type=PARTITION_REDUNDANT`
-`create region --name=Name --type=PARTITION_REDUNDANT`
+```
+create region --name=Pizza --type=PARTITION_REDUNDANT
+create region --name=Name --type=PARTITION_REDUNDANT
+```
 
 ## About the Sample Spring Boot Application
 
