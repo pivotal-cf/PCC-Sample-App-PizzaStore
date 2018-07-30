@@ -10,7 +10,7 @@ This app demonstrates a few of **Pivotal Cloud Cache’s (PCC)** interesting fea
 Steps:
 
 1. Build the Spring Boot Executable JAR file to deploy to PCF using the `./gradlew build` command.
-2. Call the `cf push` command to push the Spring Boot application to PCF. A PCF `manifest.yml` file already exists in the project root directory.
+2. Call the `cf push` command with the `--no-start` flag to push the Spring Boot application to PCF. A PCF `manifest.yml` file already exists in the project root directory.
 3. Bind the Spring Boot application to a *Pivotal Cloud Cache (PCC)* service instance using the command `cf bind-service APP_NAME SERVICE_INSTANCE [-c PARAMETERS_AS_JSON]`.
 If a PCC service instance has not yet been created, then create the service using `cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE`.
 
