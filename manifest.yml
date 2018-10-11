@@ -2,3 +2,6 @@
 applications:
 - name: cloudcache-pizza-store
   path: build/libs/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
+  buildpack: java_buildpack_offline
+  env:
+     SPRING_PROFILES_ACTIVE: cloud
