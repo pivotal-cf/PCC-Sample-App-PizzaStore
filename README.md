@@ -14,7 +14,15 @@ Steps:
 3. Bind the Spring Boot application to a *Pivotal Cloud Cache (PCC)* service instance using the command `cf bind-service APP_NAME SERVICE_INSTANCE [-c PARAMETERS_AS_JSON]`.
 If a PCC service instance has not yet been created, then create the service using `cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE`.
 
+
 Once application is successfully deployed, hit the REST API endpoint `<url>/ping` and you should see a 200-OK response code with a response of "**PONG!**".
+
+#### Switching between TLS and Non TLS clusters
+Pizza store application supports switching between connecting to a TLS and Non TLS cluster. By default application will 
+use Non TLS cluster.
+
+For using it with TLS enabled cluster, please use the Spring Profile `tls`. This can be changed on the `manifest.yaml`
+
 
 #### Creating the Regions
 

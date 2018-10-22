@@ -15,15 +15,13 @@
 package io.pivotal.cloudcache.app.config;
 
 
+import io.pivotal.cloudcache.app.model.Pizza;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
 import org.springframework.data.gemfire.config.annotation.EnableLogging;
-import org.springframework.data.gemfire.config.annotation.EnableSsl;
 import org.springframework.geode.config.annotation.EnableDurableClient;
 import org.springframework.geode.config.annotation.UseMemberName;
-
-import io.pivotal.cloudcache.app.model.Pizza;
 
 @Configuration
 @Profile("!tls")

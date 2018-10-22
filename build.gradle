@@ -1,17 +1,22 @@
 buildscript {
 	repositories {
 		mavenCentral()
+		maven {	url "https://plugins.gradle.org/m2/" }
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
 	}
 }
 
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'org.springframework.boot'
+plugins {
+	id "io.franzbecker.gradle-lombok" version "1.14"
+	id "java"
+	id "idea"
+	id "eclipse"
+	id "io.spring.dependency-management" version "1.0.6.RELEASE"
+	id "org.springframework.boot" version "2.0.6.RELEASE"
+}
+
 
 bootJar {
 	mainClassName = 'io.pivotal.cloudcache.app.CloudcachePizzaStoreApplication'
@@ -31,6 +36,12 @@ repositories {
 	mavenCentral()
 //	maven { url "https://commercial-repo.pivotal.io/data3/gemfire-release-repo/gemfire" }
 	maven { url "https://repo.spring.io/libs-snapshot" }
+	maven {	url "https://plugins.gradle.org/m2/" }
+}
+
+lombok {
+	version = "$lombokVersion"
+	sha256 = ""
 }
 
 compileJava.dependsOn(processResources)
@@ -45,15 +56,12 @@ dependencies {
 		exclude module: 'spring-boot-starter-logging'
 	}
 
-	compile "org.projectlombok:lombok"
+	compile ("org.springframework.geode:spring-gemfire-starter:$springBootDataGemFireVersion")
+	compile ("org.apache.logging.log4j:log4j-slf4j-impl:2.11.1")
 
-	compile "org.springframework.geode:spring-gemfire-starter:$springBootDataGemFireVersion"
-
-	compile ("org.apache.logging.log4j:log4j-slf4j-impl")
-
-	runtime "com.h2database:h2"
-	runtime "org.slf4j:jcl-over-slf4j"
-	runtime "org.slf4j:jul-to-slf4j"
+	runtime "com.h2database:h2:1.4.197"
+	runtime "org.slf4j:jcl-over-slf4j:1.7.25"
+	runtime "org.slf4j:jul-to-slf4j:1.7.25"
 	runtime "org.springframework.shell:spring-shell:$springShellVersion"
 
 	testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion"){
