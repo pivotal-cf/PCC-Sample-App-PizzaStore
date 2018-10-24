@@ -31,7 +31,7 @@ import org.springframework.geode.config.annotation.UseMemberName;
 @EnableDurableClient(id = "pizza-store")
 @EnableEntityDefinedRegions(basePackageClasses = Pizza.class)
 @EnableLogging(logLevel = "info")
-@UseMemberName("SpringBootPivotalCloudCachePizzaStoreApplication")
+@UseMemberName("SpringBootPivotalCloudCachePizzaStoreApplication-tls")
 @SuppressWarnings("unused")
 public class GemFireTLSConfiguration {
 

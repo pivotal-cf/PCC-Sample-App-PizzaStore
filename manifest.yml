@@ -1,7 +1,7 @@
 ---
 applications:
-- name: cloudcache-pizza-store
+- name: cloudcache-pizza-store-non-tls
   path: build/libs/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
   buildpack: java_buildpack_offline
   env:
-     SPRING_PROFILES_ACTIVE: cloud
+     SPRING_PROFILES_ACTIVE: !tls
