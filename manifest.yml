@@ -4,4 +4,4 @@ applications:
   path: build/libs/cloudcache-pizza-store-1.0.0-SNAPSHOT.jar
   buildpack: java_buildpack_offline
   env:
-     SPRING_PROFILES_ACTIVE: !tls
+     SPRING_PROFILES_ACTIVE: non-tls

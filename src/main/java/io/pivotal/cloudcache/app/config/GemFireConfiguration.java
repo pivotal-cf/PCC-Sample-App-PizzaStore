@@ -24,7 +24,7 @@ import org.springframework.geode.config.annotation.EnableDurableClient;
 import org.springframework.geode.config.annotation.UseMemberName;
 
 @Configuration
-@Profile("!tls")
+@Profile("non-tls")
 //@EnableClusterConfiguration(useHttp = true)
 @EnableDurableClient(id = "pizza-store")
 @EnableEntityDefinedRegions(basePackageClasses = Pizza.class)
