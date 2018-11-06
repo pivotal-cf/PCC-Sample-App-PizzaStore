@@ -1,6 +1,6 @@
 # Sample Spring Boot application for Pivotal Cloud Cache
 
-Sample Spring Boot application for Pivotal Cloud Cache.
+Sample Spring Boot application for Pivotal Cloud Cache. This sample app demonstrates a Spring Boot application that can be used with a PCC cluster, either with TLS enabled or without TLS enabled.
 
 ## How to run on Pivotal Cloud Foundry (PCF)
 
@@ -9,6 +9,7 @@ This app demonstrates a few of **Pivotal Cloud Cache’s (PCC)** interesting fea
 
 Steps:
 
+1. **IF TLS IS ENABLED** You must obtain the certificate file for your PCC service instance, and convert it to a Java Keystore file `truststore.jks`. See [here](https://docs.pivotal.io/p-cloud-cache/1-5/tls-enabled-app.html) for instructions on obtaining this certificate and creating the key store file and where to put it in the app's source code prior to the next step.
 1. Build the Spring Boot Executable JAR file to deploy to PCF using the `./gradlew build` command.
 2. Call the `cf push` command with the `--no-start` flag to push the Spring Boot application to PCF. A PCF `manifest.yml` file already exists in the project root directory.
 3. Bind the Spring Boot application to a *Pivotal Cloud Cache (PCC)* service instance using the command `cf bind-service APP_NAME SERVICE_INSTANCE [-c PARAMETERS_AS_JSON]`.
