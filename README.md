@@ -11,30 +11,21 @@ Steps:
 
 1. **IF TLS IS ENABLED** You must obtain the certificate file for your PCC service instance, and convert it to a Java Keystore file `truststore.jks`. See [here](https://docs.pivotal.io/p-cloud-cache/1-5/tls-enabled-app.html) for instructions on obtaining this certificate and creating the key store file and where to put it in the app's source code prior to the next step.
 1. Build the Spring Boot Executable JAR file to deploy to PCF using the `./gradlew build` command.
-2. Call the `cf push` command with the `--no-start` flag to push the Spring Boot application to PCF. A PCF `manifest.yml` file already exists in the project root directory.
-3. Bind the Spring Boot application to a *Pivotal Cloud Cache (PCC)* service instance using the command `cf bind-service APP_NAME SERVICE_INSTANCE [-c PARAMETERS_AS_JSON]`.
-If a PCC service instance has not yet been created, then create the service using `cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE`.
-
-
-Once application is successfully deployed, hit the REST API endpoint `<url>/ping` and you should see a 200-OK response code with a response of "**PONG!**".
-
-#### Switching between TLS and Non TLS clusters
-Pizza store application supports switching between connecting to a TLS and Non TLS cluster. By default application will 
-use Non TLS cluster.
-
-For using it with TLS enabled cluster, please use the Spring Profile `tls`. This can be changed on the `manifest.yaml`
-
-
-#### Creating the Regions
-
-Before starting the Spring Boot application, you will need to create the Regions using _Gfsh_.
-
-After standing up the PCC service and creating a service key, connect to the cluster via _Gfsh_.
+1. **For TLS apps** Set the `path` field in `tls_manifest.yml` to the jar path in `build/libs`, then run `cf push --no-start -f tls_manifest.yml`. **For non-TLS apps** Set the `path` field in `manifest.yml` to the jar path in `build/libs`, then run `cf push --no-start -f manifest.yml`.
+1. Bind the Spring Boot application to a *Pivotal Cloud Cache (PCC)* service instance using the command `cf bind-service APP_NAME SERVICE_INSTANCE`.
+If a PCC service instance has not yet been created, then create a non-TLS service using `cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE`. Create  TLS service with `cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'`
+1. Before starting the Spring Boot application, you will need to create the Regions using _Gfsh_.
+After standing up the PCC service and creating a service key, connect to the cluster via _Gfsh_. Please see [this document](https://docs.pivotal.io/p-cloud-cache/1-5/accessing-instance.html) for detailed instructions on connecting to your service instance.
 
 ```
 create region --name=Pizza --type=PARTITION_REDUNDANT
 create region --name=Name --type=PARTITION_REDUNDANT
 ```
+1. Start the application with `cf start APP_NAME`
+
+
+Once application is successfully deployed, hit the REST API endpoint `<url>/ping` and you should see a 200-OK response code with a response of "**PONG!**".
+
 
 ## About the Sample Spring Boot Application
 
@@ -65,6 +56,8 @@ you can perform over REST.
 
 All REST API endpoints are accessible using HTTP GET.  This is not very RESTful, but is convenient
 when accessing this app from your Web browser.
+
+Get your app's url with `cf apps` then try the following endpoints:
 
  * `GET /nukeAndPave` - Removes all data from the "_Pizza_" and "_Name_" `Regions`.
 
