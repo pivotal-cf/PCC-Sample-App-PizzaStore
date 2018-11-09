@@ -1,104 +1,168 @@
-# Sample Spring Boot application for Pivotal Cloud Cache
+# Sample Spring Boot Application for Pivotal Cloud Cache
 
-Sample Spring Boot application for Pivotal Cloud Cache. This sample app demonstrates a Spring Boot application that can be used with a PCC cluster, either with TLS enabled or without TLS enabled.
+This example app for Pivotal Cloud Cache (PCC) is
+a Spring Boot application that can be used with
+a PCC service instance,
+either with or without TLS enabled for communication within
+the PCC service instance.
 
-## How to run on Pivotal Cloud Foundry (PCF)
+The app implements some operations of a pizza shop.
+The app leverages Spring Web MVC controllers
+to expose data access operations.
+This REST interface permits an app user to order pizzas with a
+variety of sauces and toppings.
 
-This is a Spring Boot application, which can be pushed to **Pivotal Cloud Foundry (PCF)** using the `cf push` command.
-This app demonstrates a few of **Pivotal Cloud Cache’s (PCC)** interesting features.
+Pizza orders are stored in the GemFire servers running within the PCC
+service instance.
+The app uses _Spring Data Repositories_ to store,
+access, and query data stored in PCC.
+There are two repositories, called _regions_ in GemFire.
+See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/index.html#GFBasics) for the briefest of introductions to GemFire,
+and see [Region Design](https://docs.pivotal.io/p-cloud-cache/region-design.html) for a quick tour of GemFire regions.
 
-Steps:
+This app interacts with two regions:
 
-1. **IF TLS IS ENABLED** You must obtain the certificate file for your PCC service instance, and convert it to a Java Keystore file `truststore.jks`. See [here](https://docs.pivotal.io/p-cloud-cache/1-5/tls-enabled-app.html) for instructions on obtaining this certificate and creating the key store file and where to put it in the app's source code prior to the next step.
-1. Build the Spring Boot Executable JAR file to deploy to PCF using the `./gradlew build` command.
-1. **For TLS apps** Set the `path` field in `tls_manifest.yml` to the jar path in `build/libs`, then run `cf push --no-start -f tls_manifest.yml`. **For non-TLS apps** Set the `path` field in `manifest.yml` to the jar path in `build/libs`, then run `cf push --no-start -f manifest.yml`.
-1. Bind the Spring Boot application to a *Pivotal Cloud Cache (PCC)* service instance using the command `cf bind-service APP_NAME SERVICE_INSTANCE`.
-If a PCC service instance has not yet been created, then create a non-TLS service using `cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE`. Create  TLS service with `cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'`
-1. Before starting the Spring Boot application, you will need to create the Regions using _Gfsh_.
-After standing up the PCC service and creating a service key, connect to the cluster via _Gfsh_. Please see [this document](https://docs.pivotal.io/p-cloud-cache/1-5/accessing-instance.html) for detailed instructions on connecting to your service instance.
+- The `Pizza` region represents the pizzas on order at the pizza shop.
+- The `Name` region  ?? has something to do with CQs and pesto pizzas.
 
-```
-create region --name=Pizza --type=PARTITION_REDUNDANT
-create region --name=Name --type=PARTITION_REDUNDANT
-```
-1. Start the application with `cf start APP_NAME`
+## Prepare to Run the Pizza App
 
+The app may be run with or without TLS enabled for communication
+within the PCC service instance.
+Follow the appropriate set up procedure.
 
-Once application is successfully deployed, hit the REST API endpoint `<url>/ping` and you should see a 200-OK response code with a response of "**PONG!**".
+### Prepare with TLS Communication
 
+1. Create the PCC service instance with TLS enabled:
 
-## About the Sample Spring Boot Application
+    ```
+    $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'
+    ```
+1. Follow the directions in [Developing an App Under TLS](https://docs.pivotal.io/p-cloud-cache/tls-enabled-app.html)
+to obtain the required Java Keystore file `truststore.jks` and place
+it into app's source code.
+1. Build the executable JAR file:
 
-*Pivotal Cloud Cache (PCC)* is a high-performance, high-availability caching layer for *Pivotal Cloud Foundry (PCF)*.
-This is a sample Spring Boot application which uses PCC as a caching provider and event source.
+    ```
+    $ ./gradlew build
+    ```
+1. Correct the `path` field within the `tls_manifest.yml` file.
+1. Run:
 
-This Spring Boot application implements a Pizza Store that can be used to order `Pizzas` with different sauces and toppings.
+    ```
+    $ cf push --no-start -f tls_manifest.yml
+    ```
+1. Bind the app to the PCC service instance using the command
 
-All `Pizza` orders are stored in the data servers running in the PCC cluster. The app uses _Spring Data Repositories_ to store
-and access, or query data stored in PCC.
+    ```
+    $ cf bind-service APP_NAME SERVICE_INSTANCE
+    ```
+1. Connect to the cluster via `gfsh`. Please see [this document](https://docs.pivotal.io/p-cloud-cache/1-5/accessing-instance.html) for detailed instructions on connecting to your service instance.
+1. Create the regions using `gfsh`:
 
-The application models 2 types of Objects that will be stored in PCC.
+    ```
+    gfsh>create region --name=Pizza --type=PARTITION_REDUNDANT
+    gfsh>create region --name=Name --type=PARTITION_REDUNDANT
+    ```
 
- - Name
- - Pizza
+### Prepare Without TLS Communication
 
-> NOTE: `Regions` in PCC/Pivotal GemFire terminology are analogous to a RDBMS table,
-but are a Key/Value store, and in fact, implement `java.util.concurrent.ConcurrentMap`.
+1. Create the PCC service instance without TLS communication:
+If a PCC service instance has not yet been created, then create a non-TLS service using 
 
-Both application domain model objects use the Repository (DAO) pattern to write to,
-and access data from, PCC.
+    ```
+    $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
+    ```
+1. Build the Spring Boot executable JAR file:
 
-The application leverages Spring Web MVC `Controllers` to expose data access operations
-you can perform over REST.
+    ```
+    $ ./gradlew build
+    ```
+1. Correct the `path` field within the `manifest.yml` file.
+1. Run 
 
+    ```
+    $ cf push --no-start -f manifest.yml
+    ```
+1. Bind the app to the PCC service instance using the command:
 
-#### REST API endpoints
+    ```
+    $ cf bind-service APP_NAME SERVICE_INSTANCE
+    ```
+1. Connect to the cluster via `gfsh`.
+See [this document](https://docs.pivotal.io/p-cloud-cache/1-5/accessing-instance.html) for detailed instructions on connecting to your service instance.
+1. Create the regions using `gfsh`:
+
+    ```
+    gfsh>create region --name=Pizza --type=PARTITION_REDUNDANT
+    gfsh>create region --name=Name --type=PARTITION_REDUNDANT
+    ```
+
+## Run the Pizza App
+
+1. Use the PCF CLI (when logged in) to start the application with 
+
+    ```
+    $ cf start APP_NAME
+    ```
+
+### REST API endpoints
 
 All REST API endpoints are accessible using HTTP GET.  This is not very RESTful, but is convenient
 when accessing this app from your Web browser.
 
 Get your app's url with `cf apps` then try the following endpoints:
 
- * `GET /nukeAndPave` - Removes all data from the "_Pizza_" and "_Name_" `Regions`.
+- `GET /ping`
 
- `curl -k https://cloudcache-pizza-store.cfapps.io/nukeAndPave`
+    Responds with an HTTP status code of `200 - OK` and an HTTP message body with "PONG!" if the app is running correctly.
 
- * `GET /ping` - Responds with an HTTP status code of `200 - OK` and an HTTP message body with "PONG!" if the app is running correctly.
+    ```
+    $ curl -k https://cloudcache-pizza-store.cfapps.io/ping
+    ```
 
- `curl -k https://cloudcache-pizza-store.cfapps.io/ping`
-
- * `GET /preheatOven` - Loads the "_Pizza_" `Region` with pre-baked pizzas that can be queried with `/pizzas`.
+- `GET /preheatOven` - Loads the "_Pizza_" `Region` with pre-baked pizzas that can be queried with `/pizzas`.
  This REST API endpoint calls `Repository.save()` for each pre-baked `Pizza` and verifies the pizzas
  with the `Repository.findById(..)` on "_Pizza_" `Region` to verify that everything was setup properly.
  It creates 3 types of pizzas: a Plain Pizza with Tomato Sauce and Cheese Topping, a Alfredo, Chicken, Arugula Pizza
  and a Pesto Chicken Parmesan Pizza with Cherry Tomatoes.  Hungry yet, ;-).
 
- * `GET /pizzas` - Lists the currently ordered pizzas, returning a JSON array containing `Pizza` objects.
+- `GET /pizzas` - Lists the currently ordered pizzas, returning a JSON array containing `Pizza` objects.
  Returns "_No Pizzas Found_" if no pizzas have been baked.
 
  `curl -k https://cloudcache-pizza-store.cfapps.io/pizzas`
 
- * `GET /pizzas/{name}` - Returns a single `Pizza` with the given name.  Returns "_Pizza \[name\] Not Found_"
+- `GET /pizzas/{name}` - Returns a single `Pizza` with the given name.  Returns "_Pizza \[name\] Not Found_"
  if no `Pizza` with the given "_name_" exists.
 
  `curl -k https://cloudcache-pizza-store.cfapps.io/pizzas/plain`
 
- * `GET /pizzas/order/{name}\[?sauce=<sauce>\[&toppings=\<topping-1>,\<topping-2>,...,\<topping-N>]] - Bakes a `Pizza`
+- `GET /pizzas/order/{name}\[?sauce=<sauce>\[&toppings=\<topping-1>,\<topping-2>,...,\<topping-N>]] - Bakes a `Pizza`
  of the users choosing with an optional `sauce` (defaults to `TOMATO`) and optional `toppings` (defaults to `CHEESE`)*[]:
 
  `curl -k https://cloudcache-pizza-store.cfapps.io/pizzas/order/myCustomPizza?sauce=MARINARA&toppings=CHEESE,PEPPERONI,MUSHROOM`
 
- * `GET /pizzas/pestoOrder/{name}` - Bakes a Pizza with Chicken, Cherry Tomatoes, Parmesan and Pesto sauce.
+- `GET /pizzas/pestoOrder/{name}` - Bakes a Pizza with Chicken, Cherry Tomatoes, Parmesan and Pesto sauce.
 
  `curl -k https://cloudcache-pizza-store.cfapps.io/pizzas/pestoOrder/myPestoPizza`
 
-#### Continuous Query
+- **DOES NOT CURRENTLY WORK** `GET /nukeAndPave`
 
-This Spring Boot application registers 2 different **Continuous Queries** on the "_Pizza_" `Region`.
+    Removes all data from the `Pizza` and `Name` regions.
 
-Whenever any Pizza is ordered, then the event is logged to `System.err`.
+    ```
+    $  curl -k https://cloudcache-pizza-store.cfapps.io/nukeAndPave
+    ```
 
-And, when any Pesto Pizza is ordered, then the CQ event with the name of the Pizza is written to the "_Name_" `Region`.
+## Continuous Query
+
+This Spring Boot application registers two continuous queries
+on the `Pizza` region.
+
+- Whenever any pizza is ordered, the event is logged to `System.err`.
+
+- When any pesto pizza is ordered, the CQ event with the name of
+the pizza is written to the `Name` region.
 
 PCC/Pivotal GemFire supports the notion of **Continuous Query**, which means a developer can register interests in events.
 Interests are expressed with an OQL query on `Regions` containing the data interests.  This is ideal since the developer
@@ -106,11 +170,11 @@ can use complex criteria in a OQL query predicate with the exact data the develo
 Thus, when data event occurs matching the conditions expressed in the CQ query predicate, then an event will be returned with
 the data.
 
-For more details on Pivotal GemFire CQ, see the GemFire [User Guide](http://gemfire.docs.pivotal.io/95/geode/developing/continuous_querying/chapter_overview.html).
+For more details, see the GemFire documentation section on [Continuous Querying](http://gemfire.docs.pivotal.io/geode/developing/continuous_querying/chapter_overview.html).
 
-For more details on how to use Pivotal GemFire CQ in your Spring Boot applications see [here](https://docs.spring.io/spring-data/gemfire/docs/current/reference/html/#bootstrap-annotation-config-continuous-queries).
+For more details on how to use Pivotal GemFire CQ in your Spring Boot applications see [Configuring Continuous Queries](https://docs.spring.io/spring-data/gemfire/docs/current/reference/html/#bootstrap-annotation-config-continuous-queries).
 
-#### Known Issues
+## Known Issues
 
 * You must run _Spring Boot_ version 2.0.0.RELEASE or above.
     * If using the Gradle plugin, you will need to change the Spring Boot plug-in from `spring-boot` to `org.springframework.boot`.
