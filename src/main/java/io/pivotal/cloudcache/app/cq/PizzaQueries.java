@@ -40,7 +40,7 @@ public class PizzaQueries {
     }
 
     @ContinuousQuery(name = "PestoPizzaOrdersQuery", durable = true,
-        query = "SELECT * FROM /Pizza p WHERE p.sauce.name() = 'PESTO'")
+        query = "SELECT * FROM /Pizza p WHERE p.sauce.name = 'PESTO'")
     public void handlePestoPizzaOrder(CqEvent event) {
 
         Optional.ofNullable(event)
