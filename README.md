@@ -8,7 +8,7 @@ the PCC service instance.
 
 The app implements some operations of a pizza shop.
 The app leverages Spring Web MVC controllers
-to expose data access operations.
+to expose data access operations and uses [Spring Boot For Pivotal GemFire](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.0.0.BUILD-SNAPSHOT/reference/htmlsingle/) to talk to a PCC service instance.
 This REST interface permits an app user to order pizzas with a
 variety of sauces and toppings.
 
@@ -78,7 +78,6 @@ it into app's source code.
     ```
     $ ./gradlew build
     ```
-1. Correct the `path` field within the `tls_manifest.yml` file.
 1. Run:
 
     ```
@@ -97,8 +96,8 @@ it into app's source code.
 1. Create the regions using `gfsh`:
 
     ```
-    gfsh>create region --name=Pizza --type=PARTITION_REDUNDANT
-    gfsh>create region --name=Name --type=PARTITION_REDUNDANT
+    gfsh>create region --name=Pizza --type=REPLICATE
+    gfsh>create region --name=Name --type=REPLICATE
     ```
 
 ### Prepare Without TLS Communication
@@ -114,11 +113,10 @@ If a PCC service instance has not yet been created, then create a non-TLS servic
     ```
     $ ./gradlew build
     ```
-1. Correct the `path` field within the `manifest.yml` file.
 1. Run 
 
     ```
-    $ cf push --no-start -f manifest.yml
+    $ cf push --no-start
     ```
 
     Note that the output of this `cf push` command will state the app name
@@ -134,8 +132,8 @@ See [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-5/acc
 1. Create the regions using `gfsh`:
 
     ```
-    gfsh>create region --name=Pizza --type=PARTITION_REDUNDANT
-    gfsh>create region --name=Name --type=PARTITION_REDUNDANT
+    gfsh>create region --name=Pizza --type=REPLICATE
+    gfsh>create region --name=Name --type=REPLICATE
     ```
 
 ## Run the Pizza App
@@ -226,12 +224,12 @@ Use the APP-URL with the following endpoints:
     curl -k https://APP-URL/pizzas/pestoOrder/myPestoPizza
     ```
 
-- **DOES NOT CURRENTLY WORK** `GET /nukeAndPave`
+- `GET /cleanSlate`
 
     Removes all data from the `Pizza` and `Name` regions.
 
     ```
-    $  curl -k https://APP-URL/nukeAndPave
+    $  curl -k https://APP-URL/cleanSlate
     ```
 
 ## Continuous Query
