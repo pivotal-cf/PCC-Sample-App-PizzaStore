@@ -23,7 +23,39 @@ and see [Region Design](https://docs.pivotal.io/p-cloud-cache/region-design.html
 This app interacts with two regions:
 
 - The `Pizza` region represents the pizzas on order at the pizza shop.
-- The `Name` region  ?? has something to do with CQs and pesto pizzas.
+- The `Name` region  is populated by pizzas with pesto as a sauce.
+A GemFire continuous query triggers a put to the `Name` region whenever
+a new pizza with pesto sauce is baked.
+See [Continuous Querying](http://gemfire.docs.pivotal.io/geode/developing/continuous_querying/chapter_overview.html) for an extensive explanation
+of GemFire continuous queries.
+
+Pizza sauces are one of:
+
+- ALFREDO
+- BARBECUE
+- HUMMUS
+- MARINARA
+- PESTO
+- TAPENADE
+- TOMATO
+
+Pizza toppings are any of:
+
+- ARUGULA
+- BACON
+- BANANA_PEPPERS
+- BLACK_OLIVES
+- CHEESE
+- CHERRY_TOMATOES
+- CHICKEN
+- GREEN_OLIVES
+- GREEN_PEPPERS
+- JALAPENO
+- MUSHROOM
+- ONIONS
+- PARMESAN
+- PEPPERONI
+- SAUSAGE
 
 ## Prepare to Run the Pizza App
 
@@ -52,12 +84,16 @@ it into app's source code.
     ```
     $ cf push --no-start -f tls_manifest.yml
     ```
+
+    Note that the output of this `cf push` command will state the app name
+    (APP_NAME in other steps).
+
 1. Bind the app to the PCC service instance using the command
 
     ```
     $ cf bind-service APP_NAME SERVICE_INSTANCE
     ```
-1. Connect to the cluster via `gfsh`. Please see [this document](https://docs.pivotal.io/p-cloud-cache/1-5/accessing-instance.html) for detailed instructions on connecting to your service instance.
+1. Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/accessing-instance.html) for detailed instructions on connecting to your service instance.
 1. Create the regions using `gfsh`:
 
     ```
@@ -84,13 +120,17 @@ If a PCC service instance has not yet been created, then create a non-TLS servic
     ```
     $ cf push --no-start -f manifest.yml
     ```
+
+    Note that the output of this `cf push` command will state the app name
+    (APP_NAME in other steps).
+
 1. Bind the app to the PCC service instance using the command:
 
     ```
     $ cf bind-service APP_NAME SERVICE_INSTANCE
     ```
 1. Connect to the cluster via `gfsh`.
-See [this document](https://docs.pivotal.io/p-cloud-cache/1-5/accessing-instance.html) for detailed instructions on connecting to your service instance.
+See [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-5/accessing-instance.html) for detailed instructions on connecting to your service instance.
 1. Create the regions using `gfsh`:
 
     ```
@@ -111,47 +151,87 @@ See [this document](https://docs.pivotal.io/p-cloud-cache/1-5/accessing-instance
 All REST API endpoints are accessible using HTTP GET.  This is not very RESTful, but is convenient
 when accessing this app from your Web browser.
 
-Get your app's url with `cf apps` then try the following endpoints:
+Run the command:
+
+```
+$ cf apps
+```
+
+to acquire your app's APP-URL.
+Use the APP-URL with the following endpoints:
 
 - `GET /ping`
 
-    Responds with an HTTP status code of `200 - OK` and an HTTP message body with "PONG!" if the app is running correctly.
+    Responds with an HTTP status code of `200 - OK` and an HTTP message body
+    of "PONG!" if the app is running correctly.
 
     ```
-    $ curl -k https://cloudcache-pizza-store.cfapps.io/ping
+    $ curl -k https://APP-URL/ping
     ```
 
-- `GET /preheatOven` - Loads the "_Pizza_" `Region` with pre-baked pizzas that can be queried with `/pizzas`.
- This REST API endpoint calls `Repository.save()` for each pre-baked `Pizza` and verifies the pizzas
- with the `Repository.findById(..)` on "_Pizza_" `Region` to verify that everything was setup properly.
- It creates 3 types of pizzas: a Plain Pizza with Tomato Sauce and Cheese Topping, a Alfredo, Chicken, Arugula Pizza
- and a Pesto Chicken Parmesan Pizza with Cherry Tomatoes.  Hungry yet, ;-).
+- `GET /preheatOven`
 
-- `GET /pizzas` - Lists the currently ordered pizzas, returning a JSON array containing `Pizza` objects.
- Returns "_No Pizzas Found_" if no pizzas have been baked.
+    Loads the `Pizza` region with three pre-defined pizzas.
+    This REST API endpoint calls `Repository.save()` for each pizza
+    and verifies the pizzas with the `Repository.findById(..)` on the
+    `Pizza` region to verify that everything was setup properly.
+    It creates these pizzas:
 
- `curl -k https://cloudcache-pizza-store.cfapps.io/pizzas`
+    1. tomato sauce and a cheese topping
+    2. Alfredo sauce, and chicken and arugula toppings
+    3. pesto sauce, and chicken, cherry tomatoes and parmesan cheese toppings
+ 
+    Responds with an HTTP message body of "OVEN HEATED!".
 
-- `GET /pizzas/{name}` - Returns a single `Pizza` with the given name.  Returns "_Pizza \[name\] Not Found_"
- if no `Pizza` with the given "_name_" exists.
+    ```
+    $ curl -k https://APP-URL/preheatOven
+    ```
 
- `curl -k https://cloudcache-pizza-store.cfapps.io/pizzas/plain`
+- `GET /pizzas`
 
-- `GET /pizzas/order/{name}\[?sauce=<sauce>\[&toppings=\<topping-1>,\<topping-2>,...,\<topping-N>]] - Bakes a `Pizza`
- of the users choosing with an optional `sauce` (defaults to `TOMATO`) and optional `toppings` (defaults to `CHEESE`)*[]:
+    Lists the current contents of the `Pizza` region, formatted as
+    a JSON array containing `Pizza` objects.
+    Returns "No Pizzas Found" if the region is empty.
 
- `curl -k https://cloudcache-pizza-store.cfapps.io/pizzas/order/myCustomPizza?sauce=MARINARA&toppings=CHEESE,PEPPERONI,MUSHROOM`
+    ```
+    $ curl -k https://APP-URL/pizzas
+    ```
 
-- `GET /pizzas/pestoOrder/{name}` - Bakes a Pizza with Chicken, Cherry Tomatoes, Parmesan and Pesto sauce.
+- `GET /pizzas/{name}`
+     
+    Returns the pizza with the given name in JSON form.
+    Returns "Pizza \[name\] Not Found"
+    if no pizza with the given name exists.
 
- `curl -k https://cloudcache-pizza-store.cfapps.io/pizzas/pestoOrder/myPestoPizza`
+    ```
+    curl -k https://APP-URL/pizzas/plain
+    ```
+
+- `GET /pizzas/order/{name}\[?sauce=<sauce>\[&toppings=\<topping-1>,\<topping-2>,...,\<topping-N>]]`
+
+    Bakes a pizza of the user's specification,
+    with an optional `sauce` (defaults to `TOMATO`)
+    and optional `toppings` (defaults to `CHEESE`):
+
+    ```
+    curl -k https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&toppings=CHEESE,PEPPERONI,MUSHROOM
+    ```
+
+- `GET /pizzas/pestoOrder/{name}`
+
+    Bakes a pesto sauce pizza with chicken, cherry tomatoes, and parmesan
+    cheese toppings.
+
+    ```
+    curl -k https://APP-URL/pizzas/pestoOrder/myPestoPizza
+    ```
 
 - **DOES NOT CURRENTLY WORK** `GET /nukeAndPave`
 
     Removes all data from the `Pizza` and `Name` regions.
 
     ```
-    $  curl -k https://cloudcache-pizza-store.cfapps.io/nukeAndPave
+    $  curl -k https://APP-URL/nukeAndPave
     ```
 
 ## Continuous Query
