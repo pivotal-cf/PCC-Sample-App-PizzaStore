@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
 import org.springframework.data.gemfire.config.annotation.EnableLogging;
 import org.springframework.data.gemfire.config.annotation.EnablePdx;
+import org.springframework.data.gemfire.config.annotation.EnableSsl;
 import org.springframework.geode.config.annotation.EnableDurableClient;
 import org.springframework.geode.config.annotation.UseMemberName;
 
@@ -29,8 +30,6 @@ import org.springframework.geode.config.annotation.UseMemberName;
  *
  */
 @Configuration
-@Profile("!tls")
-//@EnableClusterConfiguration(useHttp = true)
 @EnablePdx
 @EnableDurableClient(id = "pizza-store")
 @EnableEntityDefinedRegions(basePackageClasses = Pizza.class)
@@ -38,5 +37,10 @@ import org.springframework.geode.config.annotation.UseMemberName;
 @UseMemberName("SpringBootPivotalCloudCachePizzaStoreApplication")
 @SuppressWarnings("unused")
 public class GemFireConfiguration {
+
+	@Profile("tls")
+	@Configuration
+	@EnableSsl
+	static class TlsConfiguration{}
 
 }
