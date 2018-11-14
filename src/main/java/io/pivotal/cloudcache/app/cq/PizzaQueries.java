@@ -24,6 +24,10 @@ import io.pivotal.cloudcache.app.model.Name;
 import io.pivotal.cloudcache.app.model.Pizza;
 import io.pivotal.cloudcache.app.repository.NameRepository;
 
+/**
+ * This class registers a continues query. When server side receives data satisfying the query a event is
+ * pushed to the client application (this application).
+ */
 @Component
 @SuppressWarnings("unused")
 public class PizzaQueries {
@@ -39,6 +43,10 @@ public class PizzaQueries {
         System.err.printf("PIZZA [%s]%n", event.getNewValue());
     }
 
+    /**
+     * The handler defined in this method is executed when data satisfying the query reaches the server.
+     * @param event
+     */
     @ContinuousQuery(name = "PestoPizzaOrdersQuery", durable = true,
         query = "SELECT * FROM /Pizza p WHERE p.sauce.name = 'PESTO'")
     public void handlePestoPizzaOrder(CqEvent event) {

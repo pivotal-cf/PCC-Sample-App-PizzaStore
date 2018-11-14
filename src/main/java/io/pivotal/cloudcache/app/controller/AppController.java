@@ -32,6 +32,9 @@ import io.pivotal.cloudcache.app.model.Pizza;
 import io.pivotal.cloudcache.app.repository.NameRepository;
 import io.pivotal.cloudcache.app.repository.PizzaRepository;
 
+/**
+ * Implementation of all the REST APIs exposed by pizza store app
+ */
 @RestController
 @SuppressWarnings("unused")
 public class AppController {
@@ -49,8 +52,11 @@ public class AppController {
         this.pizzaRepository = pizzaRepository;
     }
 
-    @GetMapping("/nukeAndPave")
-    public String nukeAndPave() {
+    /**
+     * Clears data from all regions.
+     */
+    @GetMapping("/cleanSlate")
+    public String cleanSlate() {
 
         this.nameRepository.deleteAll();
         this.pizzaRepository.deleteAll();
@@ -58,11 +64,18 @@ public class AppController {
         return "<h1>OVEN EMPTY!</h1>";
     }
 
+    /**
+     * Health check
+     */
     @GetMapping("/ping")
     public String ping() {
         return "<h1>PONG!</h1>";
     }
 
+    /**
+     * Creates some predefined pizzas.
+     *
+     */
     @RequestMapping("/preheatOven")
     public ResponseEntity<Object> preheatOven() {
 
@@ -103,6 +116,9 @@ public class AppController {
         return new ResponseEntity<>("<h1>OVEN HEATED!</h1>", HttpStatus.OK);
     }
 
+    /**
+     * Returns all pizzas from Pizza region.
+     */
     @GetMapping("/pizzas")
     public Object getPizzas() {
 
@@ -111,14 +127,24 @@ public class AppController {
         return nullSafeIterable(pizzas).iterator().hasNext() ? pizzas : "<h1>No Pizzas Found</h1>";
     }
 
+    /**
+     * Returns details of a given pizza.
+     * @param pizzaName
+     */
     @GetMapping("/pizzas/{name}")
-    public Object getNamedPizza(@PathVariable("name") String name) {
+    public Object getNamedPizza(@PathVariable("name") String pizzaName) {
 
-        Pizza namedPizza = this.pizzaRepository.findById(name).orElse(null);
+        Pizza namedPizza = this.pizzaRepository.findById(pizzaName).orElse(null);
 
-        return namedPizza != null ? namedPizza : String.format("<h1>Pizza [%s] Not Found</h1>", name);
+        return namedPizza != null ? namedPizza : String.format("<h1>Pizza [%s] Not Found</h1>", pizzaName);
     }
 
+    /**
+     * Creates a new pizza with the given name, toppings and sauce.
+     * @param name
+     * @param pizzaSauce
+     * @param toppings
+     */
     @GetMapping("/pizzas/order/{name}")
     public String order(@PathVariable("name") String name,
             @RequestParam(name = "sauce", defaultValue = "TOMATO") Pizza.Sauce pizzaSauce,
@@ -133,7 +159,10 @@ public class AppController {
         return String.format("<h1>Pizza [%s] Ordered</h1>", namedPizza);
     }
 
-
+    /**
+     * Orders a Pesto Pizza
+     * @param name
+     */
     // Technically, this should be a POST, but...
     @GetMapping("/pizzas/pestoOrder/{name}")
     public String pestoOrder(@PathVariable("name") String name) {

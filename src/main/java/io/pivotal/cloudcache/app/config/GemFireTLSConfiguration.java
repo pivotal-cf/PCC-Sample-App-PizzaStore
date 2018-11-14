@@ -20,17 +20,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
 import org.springframework.data.gemfire.config.annotation.EnableLogging;
+import org.springframework.data.gemfire.config.annotation.EnablePdx;
 import org.springframework.data.gemfire.config.annotation.EnableSsl;
 import org.springframework.geode.config.annotation.EnableDurableClient;
 import org.springframework.geode.config.annotation.UseMemberName;
 
+/**
+ * This configuration is used when you start this app with tls spring profile.
+ *
+ */
 @Configuration
 @Profile("tls")
 @EnableSsl
+@EnablePdx
 //@EnableClusterConfiguration(useHttp = true)
 @EnableDurableClient(id = "pizza-store")
 @EnableEntityDefinedRegions(basePackageClasses = Pizza.class)
-@EnableLogging(logLevel = "info")
+@EnableLogging
 @UseMemberName("SpringBootPivotalCloudCachePizzaStoreApplication-tls")
 @SuppressWarnings("unused")
 public class GemFireTLSConfiguration {

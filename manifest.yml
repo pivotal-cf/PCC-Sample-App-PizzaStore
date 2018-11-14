@@ -1,7 +1,11 @@
 ---
 applications:
 - name: cloudcache-pizza-store
+  no-start: true
   path: build/libs/cloudcache-pizza-store-1.0.0-SNAPSHOT.jar
   buildpack: java_buildpack_offline
   env:
-     SPRING_PROFILES_ACTIVE: non-tls
+     SPRING_PROFILES_ACTIVE: !tls
+  services:
+    - dev-pcc
+

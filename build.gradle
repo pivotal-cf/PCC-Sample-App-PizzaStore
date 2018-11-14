@@ -20,6 +20,7 @@ plugins {
 
 bootJar {
 	mainClassName = 'io.pivotal.cloudcache.app.CloudcachePizzaStoreApplication'
+	baseName = "cloudcache-pizza-store"
 }
 
 idea {

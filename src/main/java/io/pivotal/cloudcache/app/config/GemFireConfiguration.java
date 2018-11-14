@@ -20,15 +20,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
 import org.springframework.data.gemfire.config.annotation.EnableLogging;
+import org.springframework.data.gemfire.config.annotation.EnablePdx;
 import org.springframework.geode.config.annotation.EnableDurableClient;
 import org.springframework.geode.config.annotation.UseMemberName;
 
+/**
+ * This configuration is used when you start this app with !tls spring profile.
+ *
+ */
 @Configuration
-@Profile("non-tls")
+@Profile("!tls")
 //@EnableClusterConfiguration(useHttp = true)
+@EnablePdx
 @EnableDurableClient(id = "pizza-store")
 @EnableEntityDefinedRegions(basePackageClasses = Pizza.class)
-@EnableLogging(logLevel = "info")
+@EnableLogging
 @UseMemberName("SpringBootPivotalCloudCachePizzaStoreApplication")
 @SuppressWarnings("unused")
 public class GemFireConfiguration {

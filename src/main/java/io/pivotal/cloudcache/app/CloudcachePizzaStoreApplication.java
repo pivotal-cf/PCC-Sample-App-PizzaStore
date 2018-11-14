@@ -17,6 +17,19 @@ package io.pivotal.cloudcache.app;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * This class runs the sample pizza store application.
+ * This is a Pivotal Cloud Cache (PCC) client application which interacts with a PCC service instance
+ * or a GemFire cluster.
+ *
+ * The configuration classes are defined under the config package.
+ * The apis exposed by the client application are defined in AppController class.
+ *
+ * This application can talk to a TLS enabled PCC service instance or a non-TLS PCC service instance (SI).
+ * Staring this application with spring.profiles.active=tls will enable TLS communication (needs TLS enabled
+ * service instance).
+ *
+ */
 @SpringBootApplication
 public class CloudcachePizzaStoreApplication {
 
