@@ -5,6 +5,5 @@ applications:
   buildpack: java_buildpack_offline
   env:
      SPRING_PROFILES_ACTIVE:
-  services:
-    - dev-pcc
+
 

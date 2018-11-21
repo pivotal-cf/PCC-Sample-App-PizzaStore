@@ -5,5 +5,4 @@ applications:
   buildpack: java_buildpack_offline
   env:
      SPRING_PROFILES_ACTIVE: tls
-  services:
-    - dev-tls
+
