@@ -252,32 +252,3 @@ For more details, see the GemFire documentation section on [Continuous Querying]
 
 For more details on how to use Pivotal GemFire CQ in your Spring Boot applications see [Configuring Continuous Queries](https://docs.spring.io/spring-data/gemfire/docs/current/reference/html/#bootstrap-annotation-config-continuous-queries).
 
-## Known Issues
-
-* You must run _Spring Boot_ version 2.0.0.RELEASE or above.
-    * If using the Gradle plugin, you will need to change the Spring Boot plug-in from `spring-boot` to `org.springframework.boot`.
-    * If using Gradle, the version must be 4.2 or above.
-* _Spring Data for Pivotal GemFire_ makes it easy and quick to build highly-scalable, Spring-powered applications using Pivotal GemFire
-as a distributed data management platform. _Spring Data for GemFire_ 2.0.x uses Pivotal GemFire 9.1.1. If a different version is required,
-you must exclude the Pivotal GemFire library from Spring Data for Pivotal GemFire in your project build dependencies.
-When the Pivotal GemFire library is excluded, each required library must be explicitly specified.
-
-Example `build.gradle`:
-
-```
-   compile("org.springframework.data:spring-data-gemfire:$springDataGemfireVersion"){
-        exclude module: "io.pivotal.gemfire"
-    }
-    compile("io.pivotal.gemfire:geode-core:$gemfireVersion")
-    compile("io.pivotal.gemfire:geode-cq:$gemfireVersion")
-    compile("io.pivotal.gemfire:geode-wan:$gemfireVersion")
-    compile("io.pivotal.gemfire:geode-lucene:$gemfireVersion")
-
-```
-
-* Finally, to realize the full potential and power of Pivotal GemFire or PCC in a Spring context, use the _Spring Boot for Pivotal GemFire_
-project...
-
-```
-  compile "org.springframework.geode:gemfire-spring-boot-starter:$springBootDataGemFireVersion"
-```
