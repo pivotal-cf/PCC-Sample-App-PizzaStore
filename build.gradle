@@ -71,7 +71,7 @@ dependencies {
 		exclude module: 'spring-boot-starter-logging'
 	}
 
-	compile ("org.springframework.data:spring-data-gemfire:2.2.0.M1")
+	compile ("org.springframework.data:spring-data-gemfire:2.2.0.BUILD-SNAPSHOT")
 
 	testCompile("com.github.stefanbirkner:system-rules:1.17.1")
 
