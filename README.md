@@ -17,8 +17,8 @@ service instance.
 The app uses _Spring Data Repositories_ to store,
 access, and query data stored in PCC.
 There are two repositories, called _regions_ in GemFire.
-See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/PCC-VERSION/index.html#GFBasics) for the briefest of introductions to GemFire,
-and see [Region Design](https://docs.pivotal.io/p-cloud-cache/PCC-VERSION/region-design.html) for a quick tour of GemFire regions.
+See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-8/index.html#GFBasics) for the briefest of introductions to GemFire,
+and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-8/region-design.html) for a quick tour of GemFire regions.
 
 This app interacts with two regions:
 
@@ -70,7 +70,7 @@ Follow the appropriate set up procedure.
     ```
     $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'
     ```
-1. Follow the directions in [Developing an App Under TLS](https://docs.pivotal.io/p-cloud-cache/PCC-VERSION/tls-enabled-app.html)
+1. Follow the directions in [Developing an App Under TLS](https://docs.pivotal.io/p-cloud-cache/1-8/tls-enabled-app.html)
 to obtain the required Java Keystore file `truststore.jks` and place
 it into app's source code.
 1. Build the executable JAR file:
@@ -92,7 +92,7 @@ it into app's source code.
     ```
     $ cf bind-service APP_NAME SERVICE_INSTANCE
     ```
-1. Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/PCC-VERSION/accessing-instance.html) for detailed instructions on connecting to your service instance.
+1. Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-8/accessing-instance.html) for detailed instructions on connecting to your service instance.
 1. Create the regions using `gfsh`:
 
     ```
@@ -128,7 +128,7 @@ If a PCC service instance has not yet been created, then create a non-TLS servic
     $ cf bind-service APP_NAME SERVICE_INSTANCE
     ```
 1. Connect to the cluster via `gfsh`.
-See [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/PCC-VERSION/accessing-instance.html) for detailed instructions on connecting to your service instance.
+See [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-8/accessing-instance.html) for detailed instructions on connecting to your service instance.
 1. Create the regions using `gfsh`:
 
     ```
