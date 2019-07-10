@@ -1,6 +1,6 @@
 # Sample Spring Boot Application for Pivotal Cloud Cache
 
-This example app for Pivotal Cloud Cache (PCC) is
+This versioned example app for Pivotal Cloud Cache (PCC) is
 a Spring Boot application that can be used with
 a PCC service instance,
 either with or without TLS enabled for communication within
@@ -61,7 +61,13 @@ Pizza toppings are any of:
 
 The app may be run with or without TLS enabled for communication
 within the PCC service instance.
-Follow the appropriate set up procedure.
+This app is versioned, and branches of this repository represent PCC
+versions.
+Check out and build the app from the branch that matches your PCC service
+instance's version.
+For example, if your PCC service instance is version 1.7,
+check out this repository's `release/1.7` branch.
+Follow the appropriate setup procedure.
 
 ### Prepare with TLS Communication
 
@@ -73,7 +79,8 @@ Follow the appropriate set up procedure.
 1. Follow the directions in [Developing an App Under TLS](https://docs.pivotal.io/p-cloud-cache/PCC-VERSION/tls-enabled-app.html)
 to obtain the required Java Keystore file `truststore.jks` and place
 it into app's source code.
-1. Build the executable JAR file:
+1. Check out the appropriate branch to match your PCC service instance's version,
+and build the executable JAR file:
 
     ```
     $ ./gradlew build
@@ -108,7 +115,8 @@ If a PCC service instance has not yet been created, then create a non-TLS servic
     ```
     $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
     ```
-1. Build the Spring Boot executable JAR file:
+1. Check out the appropriate branch to match your PCC service instance's version,
+and build the Spring Boot executable JAR file:
 
     ```
     $ ./gradlew build
