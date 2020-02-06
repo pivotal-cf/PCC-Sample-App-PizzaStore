@@ -14,15 +14,8 @@
 
 package io.pivotal.cloudcache.app.cq;
 
-import java.util.Optional;
-
-import org.apache.geode.cache.query.CqEvent;
-import org.springframework.data.gemfire.listener.annotation.ContinuousQuery;
-import org.springframework.stereotype.Component;
-
-import io.pivotal.cloudcache.app.model.Name;
-import io.pivotal.cloudcache.app.model.Pizza;
 import io.pivotal.cloudcache.app.repository.NameRepository;
+import org.springframework.stereotype.Component;
 
 /**
  * This class registers a continues query. When server side receives data satisfying the query a event is
@@ -38,29 +31,29 @@ public class PizzaQueries {
         this.nameRepository = nameRepository;
     }
 
-    @ContinuousQuery(name = "AllPizzaOrder", query="SELECT * FROM /Pizza")
-    public void handleAnyPizzaOrder(CqEvent event) {
-        System.err.printf("PIZZA [%s]%n", event.getNewValue());
-    }
-
-    /**
-     * The handler defined in this method is executed when data satisfying the query reaches the server.
-     * @param event
-     */
-    @ContinuousQuery(name = "PestoPizzaOrdersQuery", durable = true,
-        query = "SELECT * FROM /Pizza p WHERE p.sauce.name = 'PESTO'")
-    public void handlePestoPizzaOrder(CqEvent event) {
-
-        Optional.ofNullable(event)
-            .map(CqEvent::getNewValue)
-            .filter(newValue -> newValue instanceof Pizza)
-            .map(newValue -> (Pizza) newValue)
-            .map(Pizza::getName)
-            .map(pizzaName -> {
-                System.err.printf("Pesto Pizza [%s] Ordered%n", pizzaName);
-                return pizzaName;
-            })
-            .map(Name::of)
-            .ifPresent(this.nameRepository::save);
-    }
+//    @ContinuousQuery(name = "AllPizzaOrder", query="SELECT * FROM /Pizza")
+//    public void handleAnyPizzaOrder(CqEvent event) {
+//        System.err.printf("PIZZA [%s]%n", event.getNewValue());
+//    }
+//
+//    /**
+//     * The handler defined in this method is executed when data satisfying the query reaches the server.
+//     * @param event
+//     */
+//    @ContinuousQuery(name = "PestoPizzaOrdersQuery", durable = true,
+//        query = "SELECT * FROM /Pizza p WHERE p.sauce.name = 'PESTO'")
+//    public void handlePestoPizzaOrder(CqEvent event) {
+//
+//        Optional.ofNullable(event)
+//            .map(CqEvent::getNewValue)
+//            .filter(newValue -> newValue instanceof Pizza)
+//            .map(newValue -> (Pizza) newValue)
+//            .map(Pizza::getName)
+//            .map(pizzaName -> {
+//                System.err.printf("Pesto Pizza [%s] Ordered%n", pizzaName);
+//                return pizzaName;
+//            })
+//            .map(Name::of)
+//            .ifPresent(this.nameRepository::save);
+//    }
 }
