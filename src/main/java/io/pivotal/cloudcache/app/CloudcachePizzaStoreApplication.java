@@ -16,6 +16,8 @@ package io.pivotal.cloudcache.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.gemfire.config.annotation.EnableAuth;
+import org.springframework.geode.boot.autoconfigure.ClientSecurityAutoConfiguration;
 
 /**
  * This class runs the sample pizza store application.
@@ -30,7 +32,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * service instance).
  *
  */
-@SpringBootApplication
+@SpringBootApplication(exclude ={ClientSecurityAutoConfiguration.class})
+@EnableAuth(clientAuthenticationInitializer =
+    "io.pivotal.cloudcache.app.CloudcacheClientAuthInitialize.create")
+//@EnableAuth(clientAuthenticationInitializer =
+//    "org.springframework.data.gemfire.config.annotation.AbstractGeodeSecurityIntegrationTests$GeodeClientAuthInitialize.create")
 public class CloudcachePizzaStoreApplication {
 
     public static void main(String[] args) {
