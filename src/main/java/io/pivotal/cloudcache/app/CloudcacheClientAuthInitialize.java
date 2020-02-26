@@ -14,8 +14,6 @@ import org.springframework.util.Assert;
 import org.apache.geode.security.ResourcePermission;
 
 public class CloudcacheClientAuthInitialize extends AbstractAuthInitialize {
-//  protected static final User ANALYST = User.newUser("analyst").with("p@55w0rd");
-//  protected static final User SCIENTIST = User.newUser("scientist").with("w0rk!ng4u");
   protected static final String SECURITY_PASSWORD_PROPERTY = "security-password";
   protected static final String SECURITY_USERNAME_PROPERTY = "security-username";
   protected static final String SECURITY_TOKEN_PROPERTY = "security-token";
@@ -24,14 +22,11 @@ public class CloudcacheClientAuthInitialize extends AbstractAuthInitialize {
 
   /* (non-Javadoc) */
   public static CloudcacheClientAuthInitialize create() {
-//    return new CloudcacheClientAuthInitialize(RUN_COUNT.incrementAndGet() < 2 ? SCIENTIST : ANALYST);
-    System.out.println("DEBUG: CloudcacheClientAuthInitialize.create()");
-    return new CloudcacheClientAuthInitialize(User.newUser("i6S8C25gpnsbu3LM0qUA").with("YIhpZFDXBoYqlUU3KX7Lg"));
+    return new CloudcacheClientAuthInitialize(User.newUser("some-username").with("some-password"));
   }
 
   /* (non-Javadoc) */
   public CloudcacheClientAuthInitialize(User user) {
-    System.out.println(String.format("DEBUG: CloudcacheClientAuthInitialize(%s)", user.getName()));
     Assert.notNull(user, "User cannot be null");
     this.user = user;
   }
@@ -39,14 +34,10 @@ public class CloudcacheClientAuthInitialize extends AbstractAuthInitialize {
   /* (non-Javadoc) */
   @Override
   protected Properties doGetCredentials(Properties securityProperties) {
-
-    User user = getUser();
-    System.out.println(String.format("DEBUG: CloudcacheClientAuthInitialize.doGetCredentials: user = %s", user.getName()));
-
     return new PropertiesBuilder()
         .setProperty(SECURITY_USERNAME_PROPERTY, "")
         .setProperty(SECURITY_PASSWORD_PROPERTY, "")
-        .setProperty(SECURITY_TOKEN_PROPERTY, "Bearer bar")
+        .setProperty(SECURITY_TOKEN_PROPERTY, "some-token")
         .build();
   }
 
