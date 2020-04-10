@@ -1,8 +1,0 @@
----
-applications:
-- name: cloudcache-pizza-store-tls
-  path: build/libs/cloudcache-pizza-store-1.0.0-SNAPSHOT.jar
-  buildpack: java_buildpack_offline
-  env:
-     SPRING_PROFILES_ACTIVE: tls
-
