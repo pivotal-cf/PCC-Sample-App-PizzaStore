@@ -59,98 +59,61 @@ Pizza toppings are any of:
 
 ## Prepare to Run the Pizza App
 
-The app may be run with or without TLS enabled for communication
-within the PCC service instance.
-This app is versioned, and branches of this repository represent PCC
-versions.
-Check out and build the app from the branch that matches your PCC service
-instance's version.
-For example, if your PCC service instance is version 1.7,
-check out this repository's `release/1.7` branch.
+The app can connect to either a TLS or non-TLS based PCC service instance.
+This app is versioned, and branches of this repository correspond to the PCC
+version that this app will work with.
+Check out and build the app from the branch that matches your PCC tile version.
+For example, if your PCC service instance is version 1.11,
+check out this repository's `release/1.11` branch.
 Follow the appropriate setup procedure.
 
 ### Prepare with TLS Communication
+
+Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-cloud-cache/1-11/prepare-TLS.html) steps from the docs before creating a TLS or non-TLS service instance.
 
 1. Create the PCC service instance with TLS enabled:
 
     ```
     $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'
     ```
-1. Follow the directions in [Developing an App Under TLS](https://docs.pivotal.io/p-cloud-cache/1-11/tls-enabled-app.html)
-to obtain the required Java Keystore file `truststore.jks` and place
-it into app's source code.
-1. Check out the appropriate branch to match your PCC service instance's version,
-and build the executable JAR file:
+2. Configure the app to use by adding this property in [application.properties](src/main/resources/application.properties).
+```
+spring.data.gemfire.security.ssl.use-default-context=true
+```
 
-    ```
-    $ ./gradlew build
-    ```
-1. Run:
+3. Point the app to the PCC service instance by add the service in the services section of [manifest.yml](manifest.yml) file as shown below
 
-    ```
-    $ cf push --no-start -f tls_manifest.yml
-    ```
+```yaml
+applications:
+- name: cloudcache-pizza-store
+  path: target/PCC-Sample-App-PizzaStore-0.0.1-SNAPSHOT.jar
+  buildpack: java_buildpack_offline
+  random-route: true
+  services:
+   - dev-si
+```
 
-    Note that the output of this `cf push` command will state the app name
-    (APP_NAME in other steps).
+4. Build and push the app
+```sh
+mvn clean install
+cf push
 
-1. Bind the app to the PCC service instance using the command
+```
 
-    ```
-    $ cf bind-service APP_NAME SERVICE_INSTANCE
-    ```
-1. Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-11/accessing-instance.html) for detailed instructions on connecting to your service instance.
-1. Create the regions using `gfsh`:
-
-    ```
-    gfsh>create region --name=Pizza --type=REPLICATE
-    gfsh>create region --name=Name --type=REPLICATE
-    ```
 
 ### Prepare Without TLS Communication
 
-1. Create the PCC service instance without TLS communication:
-If a PCC service instance has not yet been created, then create a non-TLS service using 
+Follow the steps just like in TLS setup except for the 2 below
 
-    ```
-    $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
-    ```
-1. Check out the appropriate branch to match your PCC service instance's version,
-and build the Spring Boot executable JAR file:
+1. When creating the service instance, dont mention `-c '{"tls":true}'`
 
-    ```
-    $ ./gradlew build
-    ```
-1. Run 
+2. Sjip the step 2 in the above section, i.e no need to set `spring.data.gemfire.security.ssl.use-default-context=true`
 
-    ```
-    $ cf push --no-start
-    ```
 
-    Note that the output of this `cf push` command will state the app name
-    (APP_NAME in other steps).
+#### Connect using cli
+Optionally you can connect using `gfsh` to look at the service instance. Follow steps from the doc
+under the section [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-11/accessing-instance.html) 
 
-1. Bind the app to the PCC service instance using the command:
-
-    ```
-    $ cf bind-service APP_NAME SERVICE_INSTANCE
-    ```
-1. Connect to the cluster via `gfsh`.
-See [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-11/accessing-instance.html) for detailed instructions on connecting to your service instance.
-1. Create the regions using `gfsh`:
-
-    ```
-    gfsh>create region --name=Pizza --type=REPLICATE
-    gfsh>create region --name=Name --type=REPLICATE
-    ```
-
-## Run the Pizza App
-
-1. Use the PCF CLI (when logged in) to start the application with 
-
-    ```
-    $ cf start APP_NAME
-    ```
 
 ### REST API endpoints
 
