@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>io.pivotal.cloudcache.sample</groupId>
 	<artifactId>PCC-Sample-App-PizzaStore</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>PCC-Sample-App-PizzaStore</name>
 	<description>Spring Boot application using Pivotal Cloud Cache on Pivotal Platform</description>
 
