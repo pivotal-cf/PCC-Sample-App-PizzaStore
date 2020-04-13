@@ -2,17 +2,15 @@
 
 This versioned example app for Pivotal Cloud Cache (PCC) is
 a Spring Boot application that can be used with
-a PCC service instance,
-either with or without TLS enabled for communication within
-the PCC service instance.
+a PCC service instance that is TLS enabled or not.
 
+App uses [Spring Boot Data Geode](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.2.6.RELEASE/reference/htmlsingle/) (SBDG)to talk to the PCC service instance.
 The app implements some operations of a pizza shop.
 The app leverages Spring Web MVC controllers
-to expose data access operations and uses [Spring Boot For Pivotal GemFire](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.0.0.BUILD-SNAPSHOT/reference/htmlsingle/) to talk to a PCC service instance.
-This REST interface permits an app user to order pizzas with a
-variety of sauces and toppings.
+to expose data access operations.
+This REST interface permits an app user to order pizzas and view them.
 
-Pizza orders are stored in the GemFire servers running within the PCC
+Pizza orders are stored in the Tanzu GemFire servers running within the PCC
 service instance.
 The app uses _Spring Data Repositories_ to store,
 access, and query data stored in PCC.
