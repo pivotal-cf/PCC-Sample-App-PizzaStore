@@ -84,7 +84,7 @@ spring.data.gemfire.security.ssl.use-default-context=true
 ```yaml
 applications:
 - name: cloudcache-pizza-store
-  path: target/PCC-Sample-App-PizzaStore-0.0.1-SNAPSHOT.jar
+  path: target/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
   buildpack: java_buildpack_offline
   random-route: true
   services:
