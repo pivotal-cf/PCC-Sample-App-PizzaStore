@@ -5,8 +5,8 @@ applications:
   buildpack: java_buildpack_offline
   random-route: true
   services:
-#    - dev-si
-    - dev-tls
+    - dev-si
+#    - dev-tls
 
 
 
