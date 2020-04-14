@@ -2,9 +2,9 @@
 
 This versioned example app for Pivotal Cloud Cache (PCC) is
 a Spring Boot application that can be used with
-a PCC service instance that is TLS enabled or not.
+a PCC service instance configured either with or without TLS enabled.
 
-App uses [Spring Boot Data Geode](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.2.6.RELEASE/reference/htmlsingle/) (SBDG)to talk to the PCC service instance.
+The app uses [Spring Boot Data Geode](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.2.6.RELEASE/reference/htmlsingle/) (SBDG) to talk to the PCC service instance.
 The app implements some operations of a pizza shop.
 The app leverages Spring Web MVC controllers
 to expose data access operations.
@@ -57,7 +57,7 @@ Pizza toppings are any of:
 
 ## Prepare to Run the Pizza App
 
-The app can connect to either a TLS or non-TLS based PCC service instance.
+The app can connect to either a TLS or non-TLS enabled PCC service instance.
 This app is versioned, and branches of this repository correspond to the PCC
 version that this app will work with.
 Check out and build the app from the branch that matches your PCC tile version.
@@ -74,38 +74,41 @@ Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-clou
     ```
     $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'
     ```
-2. Configure the app to use by adding this property in [application.properties](src/main/resources/application.properties).
-```
-spring.data.gemfire.security.ssl.use-default-context=true
-```
+1. Configure the app to use SSL by adding this property in [application.properties](src/main/resources/application.properties).
+    ```
+    spring.data.gemfire.security.ssl.use-default-context=true
+    ```
 
-3. Point the app to the PCC service instance by add the service in the services section of [manifest.yml](manifest.yml) file as shown below
+1. Point the app to the PCC service instance by adding the service in the services section of [manifest.yml](manifest.yml) file as shown below
 
-```yaml
-applications:
-- name: cloudcache-pizza-store
-  path: target/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
-  buildpack: java_buildpack_offline
-  random-route: true
-  services:
-   - dev-si
-```
+    ```yaml
+    applications:
+    - name: cloudcache-pizza-store
+      path: target/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
+      buildpack: java_buildpack_offline
+      random-route: true
+      services:
+       - dev-si
+    ```
 
-4. Build and push the app
-```sh
-mvn clean install
-cf push
-
-```
+1. Build and push the app
+    ```sh
+    mvn clean install
+    cf push
+    ```
 
 
 ### Prepare Without TLS Communication
 
-Follow the steps just like in TLS setup except for the 2 below
+The Spring Boot framework detects wheter the service instance has TLS enabled or not,
+so the same manifest is used when pushing the app as is shown above.
 
-1. When creating the service instance, dont mention `-c '{"tls":true}'`
+1. Create a PCC service instance without enabling TLS:
+    ```
+    cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
+    ```
 
-2. Sjip the step 2 in the above section, i.e no need to set `spring.data.gemfire.security.ssl.use-default-context=true`
+1. Follow steps 3 & 4 for the TLS setup above.
 
 
 #### Connect using cli
