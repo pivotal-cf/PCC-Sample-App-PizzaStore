@@ -18,6 +18,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.gemfire.config.annotation.EnableClusterConfiguration;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
+import org.springframework.geode.config.annotation.EnableDurableClient;
 import org.springframework.geode.config.annotation.EnableClusterAware;
 
 /**
@@ -34,6 +35,7 @@ import org.springframework.geode.config.annotation.EnableClusterAware;
  *
  */
 @SpringBootApplication
+@EnableDurableClient(id = "pizza-store")
 @EnableClusterAware
 @EnableEntityDefinedRegions
 public class CloudcachePizzaStoreApplication {
