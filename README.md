@@ -76,7 +76,7 @@ Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-clou
     ```
 1. Create the regions required by the app using `gfsh`:
 
-    Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/PCC-VERSION/accessing-instance.html) for detailed instructions on connecting to your service instance.
+    Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-11/accessing-instance.html) for detailed instructions on connecting to your service instance.
 
     ```
     gfsh>create region --name=Pizza --type=REPLICATE
