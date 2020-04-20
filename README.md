@@ -1,31 +1,31 @@
-# Sample Spring Boot Application for Pivotal Cloud Cache
+# Sample Spring Boot Application for VMware Tanzu GemFire
 
-This versioned example app for Pivotal Cloud Cache (PCC) is
+This versioned example app for VMware Tanzu GemFire is
 a Spring Boot application that can be used with
-a PCC service instance configured either with or without TLS enabled.
+a Tanzu GemFire service instance configured either with or without TLS enabled.
 
-The app uses [Spring Boot Data Geode](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.2.6.RELEASE/reference/htmlsingle/) (SBDG) to talk to the PCC service instance.
+The app uses [Spring Boot Data Geode](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.2.6.RELEASE/reference/htmlsingle/) (SBDG) to talk to the Tanzu GemFire service instance.
 The app implements some operations of a pizza shop.
 The app leverages Spring Web MVC controllers
 to expose data access operations.
 This REST interface permits an app user to order pizzas and view them.
 
-Pizza orders are stored in the Tanzu GemFire servers running within the PCC
-service instance.
+Pizza orders are stored in the Tanzu GemFire servers running within
+the Tanzu GemFire service instance.
 The app uses _Spring Data Repositories_ to store,
-access, and query data stored in PCC.
-There are two repositories, called _regions_ in GemFire.
-See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-11/index.html#GFBasics) for the briefest of introductions to GemFire,
-and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-11/region-design.html) for a quick tour of GemFire regions.
+access, and query data stored in Tanzu GemFire.
+There are two repositories, called _regions_ in Tanzu GemFire.
+See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-11/index.html#GFBasics) for the briefest of introductions to Tanzu GemFire,
+and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-11/region-design.html) for a quick tour of Tanzu GemFire regions.
 
 This app interacts with two regions:
 
 - The `Pizza` region represents the pizzas on order at the pizza shop.
 - The `Name` region  is populated by pizzas with pesto as a sauce.
-A GemFire continuous query triggers a put to the `Name` region whenever
+A Tanzu GemFire continuous query triggers a put to the `Name` region whenever
 a new pizza with pesto sauce is baked.
 See [Continuous Querying](http://gemfire.docs.pivotal.io/geode/developing/continuous_querying/chapter_overview.html) for an extensive explanation
-of GemFire continuous queries.
+of Tanzu GemFire continuous queries.
 
 Pizza sauces are one of:
 
@@ -57,11 +57,11 @@ Pizza toppings are any of:
 
 ## Prepare to Run the Pizza App
 
-The app can connect to either a TLS or non-TLS enabled PCC service instance.
-This app is versioned, and branches of this repository correspond to the PCC
-version that this app will work with.
-Check out and build the app from the branch that matches your PCC tile version.
-For example, if your PCC service instance is version 1.11,
+The app can connect to either a TLS or non-TLS enabled Tanzu GemFire service instance.
+This app is versioned, and branches of this repository correspond to
+the Tanzu GemFire version that this app will work with.
+Check out and build the app from the branch that matches your Tanzu GemFire tile version.
+For example, if your Tanzu GemFire service instance is version 1.11,
 check out this repository's `release/1.11` branch.
 Follow the appropriate setup procedure.
 
@@ -69,7 +69,7 @@ Follow the appropriate setup procedure.
 
 Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-cloud-cache/1-11/prepare-TLS.html) steps from the docs before creating a TLS or non-TLS service instance.
 
-1. Create the PCC service instance with TLS enabled:
+1. Create the Tanzu GemFire service instance with TLS enabled:
 
     ```
     $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'
@@ -88,7 +88,7 @@ Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-clou
     spring.data.gemfire.security.ssl.use-default-context=true
     ```
 
-1. Point the app to the PCC service instance by adding the service in the services section of [manifest.yml](manifest.yml) file as shown below
+1. Point the app to the Tanzu GemFire service instance by adding the service in the services section of [manifest.yml](manifest.yml) file as shown below
 
     ```yaml
     applications:
@@ -109,10 +109,10 @@ Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-clou
 
 ### Prepare Without TLS Communication
 
-The Spring Boot framework detects wheter the service instance has TLS enabled or not,
+The Spring Boot framework detects whether the service instance has TLS enabled or not,
 so the same manifest is used when pushing the app as is shown above.
 
-1. Create a PCC service instance without enabling TLS:
+1. Create a Tanzu GemFire service instance without enabling TLS:
     ```
     cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
     ```
@@ -128,7 +128,7 @@ under the section [Accessing a Service Instance](https://docs.pivotal.io/p-cloud
 ### REST API endpoints
 
 All REST API endpoints are accessible using HTTP GET.  This is not very RESTful, but is convenient
-when accessing this app from your Web browser.
+when accessing this app from your web browser.
 
 Run the command:
 
@@ -223,13 +223,13 @@ on the `Pizza` region.
 - When any pesto pizza is ordered, the CQ event with the name of
 the pizza is written to the `Name` region.
 
-PCC/Pivotal GemFire supports the notion of **Continuous Query**, which means a developer can register interests in events.
-Interests are expressed with an OQL query on `Regions` containing the data interests.  This is ideal since the developer
-can use complex criteria in a OQL query predicate with the exact data the developer is interested in receiving notifications for.
+Tanzu GemFire supports the notion of a **Continuous Query**, which means a developer can register interests in events.
+Interests are expressed with an OQL query on regions containing the data interests.  This is ideal since the developer
+can use complex criteria in an OQL query predicate with the exact data the developer is interested in receiving notifications for.
 Thus, when data event occurs matching the conditions expressed in the CQ query predicate, then an event will be returned with
 the data.
 
-For more details, see the GemFire documentation section on [Continuous Querying](http://gemfire.docs.pivotal.io/geode/developing/continuous_querying/chapter_overview.html).
+For more details, see the Tanzu GemFire documentation section on [Continuous Querying](http://gemfire.docs.pivotal.io/geode/developing/continuous_querying/chapter_overview.html).
 
-For more details on how to use Pivotal GemFire CQ in your Spring Boot applications see [Configuring Continuous Queries](https://docs.spring.io/spring-data/gemfire/docs/current/reference/html/#bootstrap-annotation-config-continuous-queries).
+For more details on how to use continuous queries in your Spring Boot applications see [Configuring Continuous Queries](https://docs.spring.io/spring-data/gemfire/docs/current/reference/html/#bootstrap-annotation-config-continuous-queries).
 
