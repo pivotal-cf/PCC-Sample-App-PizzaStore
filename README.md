@@ -117,8 +117,14 @@ so the same manifest is used when pushing the app as is shown above.
     cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
     ```
 
-1. Follow steps 3 & 4 for the TLS setup above.
+1. Create the regions required by the app using `gfsh`:
 
+       Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/PCC-VERSION/accessing-instance.html) for detailed instructions on connecting to your service instance.
+       ```
+       gfsh>create region --name=Pizza --type=REPLICATE
+       gfsh>create region --name=Name --type=REPLICATE
+       ```
+1. Build and push the app following steps 4 & 5 above for `Prepare with TLS Communication`
 
 #### Connect using cli
 Optionally you can connect using `gfsh` to look at the service instance. Follow steps from the doc
