@@ -15,8 +15,8 @@ service instance.
 The app uses _Spring Data Repositories_ to store,
 access, and query data stored in PCC.
 There are two repositories, called _regions_ in GemFire.
-See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-11/index.html#GFBasics) for the briefest of introductions to GemFire,
-and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-11/region-design.html) for a quick tour of GemFire regions.
+See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-9/index.html#GFBasics) for the briefest of introductions to GemFire,
+and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-9/region-design.html) for a quick tour of GemFire regions.
 
 This app interacts with two regions:
 
@@ -61,13 +61,13 @@ The app can connect to either a TLS or non-TLS enabled PCC service instance.
 This app is versioned, and branches of this repository correspond to the PCC
 version that this app will work with.
 Check out and build the app from the branch that matches your PCC tile version.
-For example, if your PCC service instance is version 1.11,
-check out this repository's `release/1.11` branch.
+For example, if your PCC service instance is version 1.9,
+check out this repository's `release/1.9` branch.
 Follow the appropriate setup procedure.
 
 ### Prepare with TLS Communication
 
-Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-cloud-cache/1-11/prepare-TLS.html) steps from the docs before creating a TLS or non-TLS service instance.
+Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-cloud-cache/1-9/prepare-TLS.html) steps from the docs before creating a TLS or non-TLS service instance.
 
 1. Create the PCC service instance with TLS enabled:
 
@@ -76,7 +76,7 @@ Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-clou
     ```
 1. Create the regions required by the app using `gfsh`:
 
-    Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/PCC-VERSION/accessing-instance.html) for detailed instructions on connecting to your service instance.
+    Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-9/accessing-instance.html) for detailed instructions on connecting to your service instance.
 
     ```
     gfsh>create region --name=Pizza --type=REPLICATE
@@ -117,12 +117,18 @@ so the same manifest is used when pushing the app as is shown above.
     cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
     ```
 
-1. Follow steps 3 & 4 for the TLS setup above.
+1. Create the regions required by the app using `gfsh`.
 
+   Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-9/accessing-instance.html) for detailed instructions on connecting to your service instance.
+    ```
+    gfsh>create region --name=Pizza --type=REPLICATE
+    gfsh>create region --name=Name --type=REPLICATE
+    ```
+1. Build and push the app following steps 4 & 5 above for `Prepare with TLS Communication`
 
 #### Connect using cli
 Optionally you can connect using `gfsh` to look at the service instance. Follow steps from the doc
-under the section [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-11/accessing-instance.html) 
+under the section [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-9/accessing-instance.html) 
 
 
 ### REST API endpoints
