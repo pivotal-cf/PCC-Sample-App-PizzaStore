@@ -5,5 +5,5 @@ applications:
   buildpack: java_buildpack_offline
   random-route: true
   services:
-#    - dev-si
+#    - SERVICE_INSTANCE_NAME
 

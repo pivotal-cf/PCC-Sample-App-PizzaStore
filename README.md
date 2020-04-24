@@ -72,12 +72,11 @@ Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-clou
 1. Create the PCC service instance with TLS enabled:
 
     ```
-    $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'
+    $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE_NAME -c '{"tls":true}'
     ```
-1. Create the regions required by the app using `gfsh`:
 
+1. Create the regions required by the app using `gfsh`.
     Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-10/accessing-instance.html) for detailed instructions on connecting to your service instance.
-
     ```
     gfsh>create region --name=Pizza --type=REPLICATE
     gfsh>create region --name=Name --type=REPLICATE
@@ -89,7 +88,6 @@ Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-clou
     ```
 
 1. Point the app to the PCC service instance by adding the service in the services section of [manifest.yml](manifest.yml) file as shown below
-
     ```yaml
     applications:
     - name: cloudcache-pizza-store
@@ -97,12 +95,12 @@ Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-clou
       buildpack: java_buildpack_offline
       random-route: true
       services:
-       - dev-si
+       - SERVICE_INSTNCE_NAME
     ```
 
 1. Build and push the app
     ```sh
-    mvn clean install
+    ./mvnw clean install
     cf push
     ```
 
@@ -114,17 +112,33 @@ so the same manifest is used when pushing the app as is shown above.
 
 1. Create a PCC service instance without enabling TLS:
     ```
-    cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
+    $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE_NAME
     ```
 
 1. Create the regions required by the app using `gfsh`.
-
    Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-10/accessing-instance.html) for detailed instructions on connecting to your service instance.
     ```
     gfsh>create region --name=Pizza --type=REPLICATE
     gfsh>create region --name=Name --type=REPLICATE
     ```
-1. Build and push the app following steps 4 & 5 above for `Prepare with TLS Communication`
+
+1. Point the app to the PCC service instance by adding the service in the services section of [manifest.yml](manifest.yml) file as shown below
+
+    ```yaml
+    applications:
+    - name: cloudcache-pizza-store
+      path: target/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
+      buildpack: java_buildpack_offline
+      random-route: true
+      services:
+       - SERVICE_INSTANCE_NAME
+    ```
+
+1. Build and push the app
+    ```sh
+    ./mvn clean install
+    cf push
+    ```
 
 #### Connect using cli
 Optionally you can connect using `gfsh` to look at the service instance. Follow steps from the doc
