@@ -1,29 +1,38 @@
 # Sample Spring Boot Application for VMware Tanzu GemFire
 
 This versioned example app for VMware Tanzu GemFire is
-a Spring Boot application that can be used with
-a Tanzu GemFire service instance configured either with or without TLS enabled.
+a Spring Boot app that can be used with
+a Tanzu GemFire service instance.
+That service instance may be configured either with or without TLS encryption
+enabled.
 
-The app uses [Spring Boot Data Geode](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.2.6.RELEASE/reference/htmlsingle/) (SBDG) to talk to the Tanzu GemFire service instance.
-The app implements some operations of a pizza shop.
+The app uses [Spring Boot Data Geode](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.2.6.RELEASE/reference/htmlsingle/)
+(SBDG) to talk to the Tanzu GemFire service instance.
+The app implements some operations that capture pizza orders,
+as if for a pizza shop.
 The app leverages Spring Web MVC controllers
 to expose data access operations.
-This REST interface permits an app user to order pizzas and view them.
+The REST interface permits an app user to order pizzas
+and view pizzas on order.
 
-Pizza orders are stored in the Tanzu GemFire servers running within
+Pizzas are stored in the Tanzu GemFire servers running within
 the Tanzu GemFire service instance.
 The app uses _Spring Data Repositories_ to store,
-access, and query data stored in Tanzu GemFire.
+access, and query data stored on the servers.
 There are two repositories, called _regions_ in Tanzu GemFire.
-See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-12/index.html#GFBasics) for the briefest of introductions to Tanzu GemFire,
-and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-12/region-design.html) for a quick tour of Tanzu GemFire regions.
+See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-11/index.html#GFBasics) for the briefest of introductions to Tanzu GemFire,
+and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-11/region-design.html) for a quick tour of Tanzu GemFire regions.
 
-This app interacts with two regions:
+This app specifies operations on the two regions:
 
-- The `Pizza` region represents the pizzas on order at the pizza shop.
-- The `Name` region  is populated by pizzas with pesto as a sauce.
+- The `Pizza` region represents the pizzas on order.
+Each pizza has a unique name used as the key for the region entry.
+The value portion of the key/value entry is the specification
+of a sauce and any toppings on a single pizza.
+- The `Name` region  is populated by the unique name associated with
+the pizzas with pesto as a sauce.
 A Tanzu GemFire continuous query triggers a put to the `Name` region whenever
-a new pizza with pesto sauce is baked.
+a pizza with pesto sauce is added.
 See [Continuous Querying](http://gemfire.docs.pivotal.io/geode/developing/continuous_querying/chapter_overview.html) for an extensive explanation
 of Tanzu GemFire continuous queries.
 
@@ -57,24 +66,29 @@ Pizza toppings are any of:
 
 ## Prepare to Run the Pizza App
 
-The app can connect to either a TLS or non-TLS enabled Tanzu GemFire service instance.
+The app runs with a Tanzu GemFire service instance.
+That instance may have TLS encryption enabled.
 This app is versioned, and branches of this repository correspond to
 the Tanzu GemFire version that this app will work with.
-Check out and build the app from the branch that matches your Tanzu GemFire tile version.
-For example, if your Tanzu GemFire service instance is version 1.12,
-check out this repository's `release/1.12` branch.
+Check out and run the app from the branch that matches your Tanzu GemFire
+tile version.
+For example, if your Tanzu GemFire service instance is version 1.11,
+check out this repository's `release/1.11` branch.
+The procedure to run the app differs slightly,
+based on whether TLS encryption is enabled or not.
 Follow the appropriate setup procedure.
 
 ### Prepare with TLS Communication
-
-Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-cloud-cache/1-12/prepare-TLS.html) steps from the docs before creating a TLS or non-TLS service instance.
 
 1. Create the Tanzu GemFire service instance with TLS enabled:
 
     ```
     $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'
     ```
-1. Create the regions required by the app using `gfsh`:
+    Note the name of your `SERVICE_INSTANCE`,
+    as it will be used in the `manifest.yml` file.
+
+2. Create the regions required by the app using `gfsh`:
 
     Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-12/accessing-instance.html) for detailed instructions on connecting to your service instance.
 
@@ -83,49 +97,67 @@ Note: Make sure to complete the [Prepare for TLS](https://docs.pivotal.io/p-clou
     gfsh>create region --name=Name --type=REPLICATE
     ```
 
-1. Configure the app to use SSL by adding this property in [application.properties](src/main/resources/application.properties).
+3. Configure the app to use SSL by adding this property to `src/main/resources/application.properties`:
+
     ```
     spring.data.gemfire.security.ssl.use-default-context=true
     ```
 
-1. Point the app to the Tanzu GemFire service instance by adding the service in the services section of [manifest.yml](manifest.yml) file as shown below
+4. Modify the `manifest.yml` file such that the service instance
+is no longer commented out and has the name of
+your Tanzu GemFire service instance.
+If your service instance had the name `dev-instance-1`,
+then the `services` portion of the `manifest.yml` file would be:
 
-    ```yaml
-    applications:
-    - name: cloudcache-pizza-store
-      path: target/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
-      buildpack: java_buildpack_offline
-      random-route: true
+    ```
       services:
-       - dev-si
+       - dev-instance-1
     ```
-
-1. Build and push the app
-    ```sh
-    mvn clean install
-    cf push
-    ```
-
 
 ### Prepare Without TLS Communication
 
 The Spring Boot framework detects whether the service instance has TLS enabled or not,
 so the same manifest is used when pushing the app as is shown above.
 
-1. Create a Tanzu GemFire service instance without enabling TLS:
+1. Create a Tanzu GemFire service instance without enabling TLS encryption:
+
     ```
     cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
     ```
+    Note the name of your `SERVICE_INSTANCE`,
+    as it will be used in the `manifest.yml` file.
 
-1. Follow steps 3 & 4 for the TLS setup above.
+2. Create the regions required by the app using `gfsh`:
 
+    Connect to the cluster. See [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-12/accessing-instance.html) for detailed instructions on connecting to your service instance.
 
-#### Connect using cli
-Optionally you can connect using `gfsh` to look at the service instance. Follow steps from the doc
-under the section [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-12/accessing-instance.html) 
+    ```
+    gfsh>create region --name=Pizza --type=REPLICATE
+    gfsh>create region --name=Name --type=REPLICATE
+    ```
 
+3. Modify the `manifest.yml` file such that the service instance
+is no longer commented out and has the name of
+your Tanzu GemFire service instance.
+If your service instance had the name `dev-instance-1`,
+then the `services` portion of the `manifest.yml` file would be:
 
-### REST API endpoints
+    ```
+      services:
+       - dev-instance-1
+    ```
+
+## Build and Run the Pizza App
+
+Build and cf push the app. With current working directory of
+`PCC-Sample-App-PizzaStore`:
+
+```
+$ ./mvnw clean install
+$ cf push
+```
+
+## REST API endpoints
 
 All REST API endpoints are accessible using HTTP GET.  This is not very RESTful, but is convenient
 when accessing this app from your web browser.
@@ -153,7 +185,7 @@ Use the APP-URL with the following endpoints:
     Loads the `Pizza` region with three pre-defined pizzas.
     This REST API endpoint calls `Repository.save()` for each pizza
     and verifies the pizzas with the `Repository.findById(..)` on the
-    `Pizza` region to verify that everything was setup properly.
+    `Pizza` region to verify that everything was set up properly.
     It creates these pizzas:
 
     1. tomato sauce and a cheese topping
@@ -178,7 +210,8 @@ Use the APP-URL with the following endpoints:
 
 - `GET /pizzas/{name}`
      
-    Returns the pizza with the given name in JSON form.
+    Returns the pizza with the specified name.
+    Returned pizza is in JSON form.
     Returns "Pizza \[name\] Not Found"
     if no pizza with the given name exists.
 
@@ -188,9 +221,11 @@ Use the APP-URL with the following endpoints:
 
 - `GET /pizzas/order/{name}\[?sauce=<sauce>\[&toppings=\<topping-1>,\<topping-2>,...,\<topping-N>]]`
 
-    Bakes a pizza of the user's specification,
+    Adds a pizza order for the specified name,
     with an optional `sauce` (defaults to `TOMATO`)
-    and optional `toppings` (defaults to `CHEESE`):
+    and optional `toppings` (defaults to `CHEESE`).
+    Changes the pizza order if the name is already present in
+    the pizzas on order.
 
     ```
     curl -k https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&toppings=CHEESE,PEPPERONI,MUSHROOM
@@ -213,23 +248,28 @@ Use the APP-URL with the following endpoints:
     $  curl -k https://APP-URL/cleanSlate
     ```
 
-## Continuous Query
+## Continuous Queries
 
-This Spring Boot application registers two continuous queries
+A Tanzu GemFire **Continuous Query** allows an app to register interest
+in events.
+Interest is expressed with an OQL query on regions containing the
+data interests.
+This is ideal, since a developer can specify
+complex criteria in an OQL query predicate for the exact data the app
+is interested in receiving notifications for.
+Thus, when a data event occurs matching the conditions expressed
+in the query predicate,
+an event will be returned with the data.
+
+This Spring Boot app registers two continuous queries
 on the `Pizza` region.
 
 - Whenever any pizza is ordered, the event is logged to `System.err`.
 
-- When any pesto pizza is ordered, the CQ event with the name of
-the pizza is written to the `Name` region.
-
-Tanzu GemFire supports the notion of a **Continuous Query**, which means a developer can register interests in events.
-Interests are expressed with an OQL query on regions containing the data interests.  This is ideal since the developer
-can use complex criteria in an OQL query predicate with the exact data the developer is interested in receiving notifications for.
-Thus, when data event occurs matching the conditions expressed in the CQ query predicate, then an event will be returned with
-the data.
+- When any pesto pizza is ordered, the event triggers putting the name of
+the pizza in the `Name` region.
 
 For more details, see the Tanzu GemFire documentation section on [Continuous Querying](http://gemfire.docs.pivotal.io/geode/developing/continuous_querying/chapter_overview.html).
 
-For more details on how to use continuous queries in your Spring Boot applications see [Configuring Continuous Queries](https://docs.spring.io/spring-data/gemfire/docs/current/reference/html/#bootstrap-annotation-config-continuous-queries).
+For more details on how to use continuous queries in your Spring Boot apps see [Configuring Continuous Queries](https://docs.spring.io/spring-data/gemfire/docs/current/reference/html/#bootstrap-annotation-config-continuous-queries).
 
