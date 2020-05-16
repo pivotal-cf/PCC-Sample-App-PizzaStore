@@ -116,7 +116,6 @@ so the same manifest is used when pushing the app as is shown above.
     ```
 
 1. Create the regions required by the app using `gfsh`.
-<<<<<<< HEAD
 
    Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-9/accessing-instance.html) for detailed instructions on connecting to your service instance.
     ```
