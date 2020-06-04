@@ -8,22 +8,21 @@ enabled.
 
 The app uses [Spring Boot Data Geode](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.2.6.RELEASE/reference/htmlsingle/)
 (SBDG) to talk to the Tanzu GemFire service instance.
-The app implements some operations that capture pizza orders,
-as if for a pizza shop.
+The app provides a REST interface that lets a user view pizzas, place orders, 
+and view an order.
 The app leverages Spring Web MVC controllers
 to expose data access operations.
-The REST interface permits an app user to order pizzas
-and view pizzas on order.
+
 
 Pizzas are stored in the Tanzu GemFire servers running within
 the Tanzu GemFire service instance.
 The app uses _Spring Data Repositories_ to store,
 access, and query data stored on the servers.
-There are two repositories, called _regions_ in Tanzu GemFire.
+The app stores data in two repositories `Pizza` and `Name` (repositories are referred to as regions in Tanzu GemFire).
 See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-11/index.html#GFBasics) for the briefest of introductions to Tanzu GemFire,
 and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-11/region-design.html) for a quick tour of Tanzu GemFire regions.
 
-This app specifies operations on the two regions:
+This app performs operations on two regions:
 
 - The `Pizza` region represents the pizzas on order.
 Each pizza has a unique name used as the key for the region entry.
@@ -67,16 +66,19 @@ Pizza toppings are any of:
 ## Prepare to Run the Pizza App
 
 The app runs with a Tanzu GemFire service instance.
-That instance may have TLS encryption enabled.
-This app is versioned, and branches of this repository correspond to
+This app is versioned, and branches of this git repository correspond to
 the Tanzu GemFire version that this app will work with.
 Check out and run the app from the branch that matches your Tanzu GemFire
 tile version.
 For example, if your Tanzu GemFire service instance is version 1.11,
 check out this repository's `release/1.11` branch.
-The procedure to run the app differs slightly,
+This is important because the procedure to run the app differs slightly,
 based on whether TLS encryption is enabled or not.
 Follow the appropriate setup procedure.
+
+### Prerequisites
+1. You should be logged in to your cf environment. Please see [cf login](https://cli.cloudfoundry.org/en-US/cf/login.html)
+2. The CF environment should have a Tanzu Gemfire Tile installed.
 
 ### Prepare with TLS Communication
 
