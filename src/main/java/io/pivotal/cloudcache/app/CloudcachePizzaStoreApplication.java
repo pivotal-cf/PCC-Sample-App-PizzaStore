@@ -14,12 +14,26 @@
 
 package io.pivotal.cloudcache.app;
 
+import java.util.Collections;
+
+import org.apache.geode.cache.GemFireCache;
+import org.apache.geode.cache.client.ClientCache;
+import org.apache.geode.cache.client.Pool;
+import org.apache.geode.cache.client.SocketFactory;
+import org.apache.geode.cache.client.proxy.ProxySocketFactories;
+import org.apache.geode.cache.client.proxy.SniProxySocketFactory;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.gemfire.config.annotation.EnableClusterConfiguration;
-import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.gemfire.client.ClientCacheFactoryBean;
+import org.springframework.data.gemfire.config.annotation.*;
+import org.springframework.data.gemfire.support.ConnectionEndpoint;
 import org.springframework.geode.config.annotation.EnableDurableClient;
 import org.springframework.geode.config.annotation.EnableClusterAware;
+
 
 /**
  * This class runs the sample pizza store application.
@@ -36,11 +50,16 @@ import org.springframework.geode.config.annotation.EnableClusterAware;
  */
 @SpringBootApplication
 @EnableDurableClient(id = "pizza-store")
-@EnableClusterAware
 @EnableEntityDefinedRegions
 public class CloudcachePizzaStoreApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CloudcachePizzaStoreApplication.class, args);
+    }
+
+    @Bean("mySocketFactory")
+    SocketFactory getSocketFactoryBean(@Value("${sni.hostname:tcp.foundation.cf-app.com}") String hostname,
+                                       @Value("${sni.port:8888}") int port) {
+        return  new SniProxySocketFactory(hostname, port);
     }
 }

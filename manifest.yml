@@ -2,7 +2,8 @@
 applications:
 - name: cloudcache-pizza-store
   path: target/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
-  buildpack: java_buildpack_offline
+  buildpacks:
+    - https://github.com/cloudfoundry/java-buildpack.git
   random-route: true
   services:
 #    - SERVICE_INSTANCE
