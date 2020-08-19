@@ -1,4 +1,26 @@
-# Sample Spring Boot Application for VMware Tanzu GemFire
+# Sample Spring Boot Application for VMware Tanzu GemFire For VMs
+
+Depending on where your application is running, it should fall under one of the below category.
+
+1. **Off-Platform App**
+
+    These are applications which are running on someone's desktop or a standalone VM. These are not running on any Cloud Foundry Foundation. 
+
+2. **Services Foundation App**
+
+    These are apps running on a foundation which is dedicated for services. In this case the service instance and the app are running on the same foundation.
+
+3. **Application Foundation App**
+
+    These are apps running on a foundation which is dedicated for applications. In this case the service instance and the app are running on different foundation.
+    
+This repo demonstrates all the above 3 by use of spring profiles.
+
+---------------
+
+
+This sample app demonstrates various ways that an app can talk to a Tanzu GemFire For VMs (TGF4VMs) service instance.
+
 
 This versioned example app for VMware Tanzu GemFire is
 a Spring Boot app that can be used with
