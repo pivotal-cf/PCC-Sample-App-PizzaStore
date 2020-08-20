@@ -61,15 +61,29 @@ public class AppController {
         this.nameRepository.deleteAll();
         this.pizzaRepository.deleteAll();
 
-        return "<h1>OVEN EMPTY!</h1>";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<h1>OVEN EMPTY!</h1>")
+                .append("<p><a href=\"/\">/home</a></p>");
+        return stringBuilder.toString();
+
     }
 
     /**
      * Health check
      */
-    @GetMapping("/ping")
+    @GetMapping("/")
     public String ping() {
-        return "<h1>PONG!</h1>";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("<h1>Welcome to Pizza Store!</h1>")
+                .append("<p>Below are the endpoints available to you.</p>")
+                .append("<p><a href=\"/preheatOven\">/preheatOven</a>&nbsp;-&gt;&nbsp;Loads pre defined Pizzas into a GemFire region.</p>")
+                .append("<p><a href=\"/pizzas\">/pizzas</a>&nbsp;-&gt; Gets all Pizzas from GemFire region.</p>")
+//                .append("<p><a href=\"pizzas/{name}\">/pizzas/{name}</a> -&gt; Gets all Pizzas from GemFire region.<br /><br /></p>")
+//                .append("<p><br /><a href=\"pizzas/order/{name}\">pizzas/order/{name}</a> -&gt;&nbsp;Orders a given pizza. example `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&amp;toppings=CHEESE,PEPPERONI,MUSHROOM`</p>")
+                .append("<p><a href=\"/cleanSlate\">/cleanSlate</a> -&gt; Deletes all Pizzas from GemFire region.</p>");
+
+        return sb.toString();
     }
 
     /**
@@ -113,7 +127,11 @@ public class AppController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>("<h1>OVEN HEATED!</h1>", HttpStatus.OK);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<h1>OVEN HEATED!</h1>")
+                .append("<p><a href=\"/\">/home</a></p>");
+        return new ResponseEntity<>(stringBuilder.toString(), HttpStatus.OK);
     }
 
     /**
