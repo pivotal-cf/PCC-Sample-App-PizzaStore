@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.EnableClusterConfiguration;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
+import org.springframework.data.gemfire.config.annotation.EnableSsl;
+import org.springframework.geode.config.annotation.EnableClusterAware;
 
 @Configuration
 @EnableEntityDefinedRegions(basePackages = "io.pivotal.cloudcache.app.model")
