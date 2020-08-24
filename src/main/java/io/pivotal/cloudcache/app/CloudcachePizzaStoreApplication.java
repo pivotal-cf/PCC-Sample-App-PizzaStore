@@ -14,25 +14,9 @@
 
 package io.pivotal.cloudcache.app;
 
-import java.util.Collections;
-
-import org.apache.geode.cache.GemFireCache;
-import org.apache.geode.cache.client.ClientCache;
-import org.apache.geode.cache.client.Pool;
-import org.apache.geode.cache.client.SocketFactory;
-import org.apache.geode.cache.client.proxy.ProxySocketFactories;
-import org.apache.geode.cache.client.proxy.SniProxySocketFactory;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.gemfire.client.ClientCacheFactoryBean;
-import org.springframework.data.gemfire.config.annotation.*;
-import org.springframework.data.gemfire.support.ConnectionEndpoint;
-import org.springframework.geode.config.annotation.EnableDurableClient;
-import org.springframework.geode.config.annotation.EnableClusterAware;
+import org.springframework.context.annotation.Configuration;
 
 
 /**
@@ -49,7 +33,6 @@ import org.springframework.geode.config.annotation.EnableClusterAware;
  *
  */
 @SpringBootApplication
-@EnableDurableClient(id = "pizza-store")
 public class CloudcachePizzaStoreApplication {
 
     public static void main(String[] args) {
