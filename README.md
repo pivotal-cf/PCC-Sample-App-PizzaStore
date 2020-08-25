@@ -91,16 +91,23 @@ As a prerequisite make sure services gateway setup is done as described in [Sett
 
 #### Steps:
 
-1. Create a **[Service Gateway enabled Service instance](#creating-a-service-gateway-enabled-service-instancesge-si)**.
+1. Create a **[Service Gateway enabled Service instance](#sge-si)**.
 
 2. Follow steps to **[Create Truststore for TLS communication](#create-truststore-for-tls-communication)**.
-      
-3. **Configure the app to talk to the service instance**
-     By configuring details in `application-services-foundation.properties` file.  
 
-4. **Run the app** by running `mvn spring-boot:run -Dspring-boot.run.profiles=off-platform -Dspring-boot.run.jvmArguments="-Djavax.net.ssl.trustStore=/tmp/mytruststore1.jks -Djavax.net.ssl.trustStorePassword=123456"`.
+4. Copy the truststore created in the above step and place it under the `resources` directory.
 
-5. **Interact with the app** by hitting the endpoints at http://localhost:8080           
+5. Configure [application-app-foundation.properties](src/main/resources/application-app-foundation.properties). You will need details of the service key and the truststore created in step 2. 
+
+6. Build the app by running `mvn clean install`.
+
+7. cf push the app by running `cf push -f manifest_app_foundation.yml --no-start`. 
+
+8. If your app uses @EnableClusterConfiguration (this app does) annotation then run `cf set-env cloudcache-pizzastore JBP_CONFIG_CONTAINER_SECURITY_PROVIDER '{key_manager_enabled: false}'` to disable container security provider as we want the app to use the truststore that comes with the app in the resources directory.
+
+9. Start the app `cf start cloudcache-pizzastore`
+
+10. **Interact with the app** by hitting the endpoints where the app is running (`cf app cloudcache-pizzastore` will show the route)        
 
 
 ## 3. When your app is running <ins>off-platform</ins>
@@ -112,7 +119,7 @@ As a prerequisite make sure services gateway setup is done as described in [Sett
 
 #### Steps:
 
-1. Create a [Service Gateway enabled Service instance](#creating-a-service-gateway-enabled-service-instancesge-si).
+1. Create a [Service Gateway enabled Service instance](#sge-si).
 
 2. **Create truststore** so that clients can establish TLS connections. 
    Since the service instance is TLS enabled, app has to be able to establish a TLS connection with the service instance. For this purpose the app has to have a truststore with 2 CAs in it and below is how one can get them.
