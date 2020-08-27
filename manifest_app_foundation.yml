@@ -9,3 +9,4 @@ applications:
   env:
     SPRING_PROFILES_ACTIVE: app-foundation
     JAVA_OPTS: '-Djavax.net.ssl.trustStore=/home/vcap/app/BOOT-INF/classes/mytruststore.jks -Djavax.net.ssl.trustStorePassword=123456'
+    JBP_CONFIG_CONTAINER_SECURITY_PROVIDER: '{ key_manager_enabled: false }'

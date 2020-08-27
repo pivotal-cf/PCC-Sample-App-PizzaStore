@@ -101,11 +101,7 @@ As a prerequisite make sure services gateway setup is done as described in [Sett
 
 6. Build the app by running `mvn clean install`.
 
-7. cf push the app by running `cf push -f manifest_app_foundation.yml --no-start`. 
-
-8. If your app uses @EnableClusterConfiguration (this app does) annotation then run `cf set-env cloudcache-pizzastore JBP_CONFIG_CONTAINER_SECURITY_PROVIDER '{key_manager_enabled: false}'` to disable container security provider as we want the app to use the truststore that comes with the app in the resources directory.
-
-9. Start the app `cf start cloudcache-pizzastore`
+7. cf push the app by running `cf push -f manifest_app_foundation.yml`. 
 
 10. **Interact with the app** by hitting the endpoints where the app is running (`cf app cloudcache-pizzastore` will show the route)        
 
@@ -121,25 +117,18 @@ As a prerequisite make sure services gateway setup is done as described in [Sett
 
 1. Create a [Service Gateway enabled Service instance](#sge-si).
 
-2. **Create truststore** so that clients can establish TLS connections. 
-   Since the service instance is TLS enabled, app has to be able to establish a TLS connection with the service instance. For this purpose the app has to have a truststore with 2 CAs in it and below is how one can get them.
-   
-   2.a. Get `services/tls_ca`from credhub by running `credhub get --name="/services/tls_ca" -k certificate > services_ca.crt`.
-   
-   2.b. Get the CA from where your TLS termination occurs and store it in a `.crt` file. If your TLS terminates at gorouter then you can get the CA from `OpsManager`-> `Settings`-> `Advanced Options` -> `Download Root CA Cert`.
-   
-   2.c. Create a truststore which has both the above CAs
-    `keytool -importcert -file services_ca.crt -keystore mytruststore.jks -storetype JKS`
-    `keytool -importcert -alias root_ca -file root_ca_certificate -keystore mytruststore.jks -storetype JKS`.
+2. Follow steps to **[Create Truststore for TLS communication](#create-truststore-for-tls-communication)**.
     
-   2.d. Move the truststore to resources directory. SBDG expects the truststore to be in one of the 3 well known locations. Details are in SBDG [docs](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.3.2.RELEASE/reference/html5/#geode-security-ssl).
+3. Copy the truststore created in the above step and place it under the `resources` directory or to one of the locations SBDG expects the truststore to be in one of the 3 well known locations. Details are in SBDG [docs](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.3.2.RELEASE/reference/html5/#geode-security-ssl).
       
 3. **Configure the app to talk to the service instance**
      By configuring details in `application-off-platform.properties` file.  
 
-4. **Run the app** by running `mvn spring-boot:run -Dspring-boot.run.profiles=off-platform -Dspring-boot.run.jvmArguments="-Djavax.net.ssl.trustStore=/tmp/mytruststore1.jks -Djavax.net.ssl.trustStorePassword=123456"`.
+4. **Build** the app by running `mvn clean install`.
 
-5. **Interact with the app** by hitting the endpoints at http://localhost:8080           
+5. **Run the app** by running `mvn spring-boot:run -Dspring-boot.run.profiles=off-platform -Dspring-boot.run.jvmArguments="-Djavax.net.ssl.trustStore=/tmp/mytruststore1.jks -Djavax.net.ssl.trustStorePassword=123456"`.
+
+6. **Interact with the app** by hitting the endpoints at http://localhost:8080           
    
    
 ### [Setting up service gateway](#settingup-service-gateway)
