@@ -1,32 +1,39 @@
-# Sample Spring Boot Application for VMware Tanzu GemFire For VMs (TGF4VMs)
+# Example Spring Boot Application for VMware Tanzu GemFire For VMs
 
-This repo demonstrates various deployment scenarios in which an app can talk to a Tanzu GemFire For VMs (TGF4VMs) service instance.
+This branch demonstrates deployment scenarios for an app,
+and how the app's location affects communication with Tanzu GemFire For VMs
+service instance.
 
-## About this sample app
+## About the App
 
-- A simple Spring Boot app which uses Spring Boot for Apache Geode & Pivotal GemFire (SBDG) and talks to a service instance and does CRUD (minus the Update) operations.
-- Exposes below endpoints  
+This Spring Boot app uses Spring Boot for Apache Geode & Pivotal GemFire (SBDG).
+The app talks to a Tanzu GemFire service instance.
+The app does create, read, and delete CRUD operations on data held
+in a region within service instance.
+
+The app exposes these endpoints:  
     
-    -  `https://APP-URL/preheatOven`  
+-  `https://APP-URL/preheatOven`  
         
-        Loads pre defined Pizzas into a GemFire region.
+    Creates three pre-defined pizzas, which adds them to the region.
         
-    -  `https://APP-URL/pizzas` 
+-  `https://APP-URL/pizzas` 
     
-        Gets all Pizzas from GemFire region.
+    Gets all pizzas from the region.
         
-    -  `https://APP-URL/pizzas/{name}`
+-  `https://APP-URL/pizzas/{name}`
     
-        Gets details of a given pizza.
+    Gets details of a pizza specified by its name.
          
-    -  `https://APP-URL/pizzas/order/{name}`
+-  `https://APP-URL/pizzas/order/{name}`
     
-        Orders a given pizza. 
-        (example `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&toppings=CHEESE,PEPPERONI,MUSHROOM`) 
+    Orders a given pizza, which does a create operation. 
+    For example: `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&toppings=CHEESE,PEPPERONI,MUSHROOM` orders a pizza named `myCustomPizza`,
+    which has `MARINARA` sauce and three toppings. 
    
-    -  `https://APP-URL/cleanSlate` 
+-  `https://APP-URL/cleanSlate` 
         
-        Deletes all Pizzas from GemFire region.
+    Deletes all pizzas from the region.
 
 ### Getting started: Run the localhost dev environment
 
