@@ -35,13 +35,26 @@ The app exposes these endpoints:
         
     Deletes all pizzas from the region.
 
-### Getting started: Run the localhost dev environment
+## Try the App in a Local Environment
 
-To get started, let us run this app locally, not connecting to a GemFire service instance. Since we are using the SBDG annotation [`@EnableClusterAware`](https://docs.spring.io/spring-boot-data-geode-build/current/reference/html5/#geode-configuration-declarative-annotations-productivity-enableclusteraware), when we dont configure a service instance to talk to, the annotation redirects cache operations operations to `LOCAL` regions. Thus giving an experience of a embedded cache on the client side.  
-    
-To run the app, execute this command `mvn spring-boot:run` (ignore the ConnectException: Connection refused)from the root of this repo after which you should be able to hit http://localhost:8080        
+This Spring Boot app can run locally, 
+without having a Geode or Tanzu GemFire service instance.
+The SBDG annotation [`@EnableClusterAware`](https://docs.spring.io/spring-boot-data-geode-build/current/reference/html5/#geode-configuration-declarative-annotations-productivity-enableclusteraware)
+redirects cache operations operations to `LOCAL` regions
+when there is no service instance to talk to.
+It implements an embedded cache on the client.  
 
-## [Categories of app](#categories-of-app)
+To run the app in the local environment,
+ 
+```
+mvn spring-boot:run
+```
+Ignore the `ConnectException: Connection refused`
+from the root of this repository.
+Use a web browser to talk to the app at `http://localhost:8080`.
+
+## App Location
+
 For an app that is talking to a TGF4VMs service instance, depending on where the app is running, it should fall under one of the below category.
 
 1. **Services Foundation App**
