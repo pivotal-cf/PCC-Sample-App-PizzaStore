@@ -1,7 +1,7 @@
 # Example Spring Boot Application for VMware Tanzu GemFire For VMs
 
 This branch demonstrates deployment scenarios for an app,
-and how the app's location affects communication with Tanzu GemFire For VMs
+and how the app's location affects communication with a Tanzu GemFire For VMs
 service instance.
 
 ## About the App
@@ -55,40 +55,34 @@ Use a web browser to talk to the app at `http://localhost:8080`.
 
 ## App Location
 
-For an app that is talking to a TGF4VMs service instance, depending on where the app is running, it should fall under one of the below category.
+An app that uses a Tanzu GemFire service instance may be
+located in one of three locations,
+as specified in [The App's Location](https://docs.pivotal.io/p-cloud-cache/1-13-beta/architecture.html#AppLocation).
 
-1. **Services Foundation App**
+This app demonstrates all three possibilities of app location
+using Spring profiles.
 
-    These are apps running on the same foundation where the Tanzu GemFire service instance is running.
-    
-2. **Application Foundation App**
+## Run the App in the Same Foundation as the Service Instance (Services Foundation App)
 
-    These are apps where the service instance and the app are running on different foundations.
-    Such apps are typically running on a foundation which is dedicated for applications alone and services run in a services foundation.
+When the app and the service instance are in the same foundation,
+SBDG eliminates the need to do any security configuration.
+Credentials and TLS configurations are auto applied. 
 
-3. **Off-Platform App**
+##### Run the app as a services foundation app:
 
-    These are apps which are not running on a Tanzu Platform i.e they are not running on any Cloud Foundry Foundation.
-    These apps are typically running on a standalone VM or someone's desktop and talking to a TGF4VMs service instance. 
-     
- 
-This repo demonstrates all the above 3 by use of spring profiles.
+1. Make note of the `SERVICE-INSTANCE-NAME` when you
+[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13-beta/create-instance.html#create-SI).
+The service instance may be TLS-enabled or not TLS-enabled.
 
-We pick each of the scenarios mentioned [above](#categories-of-app) and demonstrate them.
+2. Modify the `manifest.yml` file to provide the service instance name.
+Replace `SERVICE_INSTANCE` with your noted `SERVICE-INSTANCE-NAME`.
+Remove the `#` character so that the line is no longer a comment.
 
-## 1. When your app is running in the same foundation as the service instance (Services Foundation app)
+3. Build the app:
 
-When your app and the service instance are in the same foundation, SBDG (Spring Boot Data Geode) with CF bind experience alleviates 
-the need to do any security configuration. Credentials and TLS configurations are auto applied for such application. 
-
-##### Steps:
-
-1. Create a TLS enabled service instance by running `cf create-service p-cloudcache <PLAN_NAME> <SERVICE_INSTANCE> -c '{"tls":true}'`. 
-Optionally, you can skip the `-c '{"tls":true}` if you dont want TLS.
-
-2. Modify the [manifest.yml](manifest.yml#L9) and provide the name of the service instance used in the above step.
-
-3. Build the app `mvn clean install`.
+    ```
+    $ mvn clean install
+    ```
 
 4. cf push the app from the root of the project by running `cf push`.
 
@@ -97,8 +91,8 @@ Optionally, you can skip the `-c '{"tls":true}` if you dont want TLS.
 6. Verify by connecting to Gemfire Service instance using the GemFire CLI `gfsh`.
 
 As the app is bound to the service instance (via the declaration in manifest.yml or by running `cf bind`)
-SBDG was able to interospect the app container to get the connection details to the service instance. SBDG
-then auto configured the app to talk to the service instance. Nothing extra needs to be done to talk to a TLS
+SBDG inspects the app container to get the connection details to the service instance. SBDG
+then autoconfigures the app to talk to the service instance. Nothing extra needs to be done to talk to a TLS
 enabled service instance.  
 
 ## 2. When your app and the service instance are on different foundations (Application Foundation app)
