@@ -84,41 +84,67 @@ Remove the `#` character so that the line is no longer a comment.
     $ mvn clean install
     ```
 
-4. cf push the app from the root of the project by running `cf push`.
+4. With a current working directory of `PCC-Sample-App-PizzaStore`,
+push the app to your services foundation with a `cf push` command.
+Note the app's route (`APP-URL`).
 
-5. Hit the api's exposed by the app. You can get the route on which app is available by looking at the output of the previous step or by running `cf app cloudcache-pizza-store`.
+##### Use the running app:
 
-6. Verify by connecting to Gemfire Service instance using the GemFire CLI `gfsh`.
+1. Interact with the running app by hitting the endpoints exposed by the app.
 
-As the app is bound to the service instance (via the declaration in manifest.yml or by running `cf bind`)
-SBDG inspects the app container to get the connection details to the service instance. SBDG
-then autoconfigures the app to talk to the service instance. Nothing extra needs to be done to talk to a TLS
-enabled service instance.  
+2. You can use the CLI interface, gfsh, to inspect the Tanzu GemFire
+or Geode cluster.
+Follow the instructions in [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13-beta/accessing-instance.html)
+to connect the the cluster using gfsh.
 
-## 2. When your app and the service instance are on different foundations (Application Foundation app)
+## Run the App in an App Foundation
 
-Typically apps run in Application Foundation and service instances run in Services Foundation.
-To enable such apps to talk to the service instance, the service instance should have to have a
-service gateway enabled so that the service instance is reachable from outside the foundation.
+Running an app foundation app requires a service gateway.
+To set up a service gateway,
+follow the directions in
+[Configure a Service Gateway](https://docs.pivotal.io/p-cloud-cache/1-13-beta/configure-service-gateway.html).
 
-As a prerequisite make sure services gateway setup is done as described in [Setting up service gateway](#setting-up-service-gateway).
+#### Run the app as an app foundation app:
 
-#### Steps:
+1. Make note of the `SERVICE-INSTANCE-NAME` when you
+[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13-beta/create-instance.html#create-SI).
+Provide the optional parameters for enabling TLS and specifying
+the creation of a service gateway.
 
-1. Create a **[Service Gateway enabled Service instance](#sge-si)**.
+2. Follow these instructions to
+[Create Truststore for the App](https://docs.pivotal.io/p-cloud-cache/1-13-beta/running-app.html#app-truststore).
+Note the password you set for the truststore.
 
-2. Follow steps to **[Create Truststore for TLS communication](#create-truststore-for-tls-communication)**.
+3. Copy the truststore to the `resources` directory within the app source code.
 
-4. Copy the truststore created in the above step and place it under the `resources` directory.
+4. Follow these instructions to [Create a Service Key](https://docs.pivotal.io/p-cloud-cache/1-13-beta/accessing-instance.html#create-service-key). 
 
-5. Configure [application-app-foundation.properties](src/main/resources/application-app-foundation.properties). You will need details of the service key and the truststore created in step 2. 
+5. Edit the app's `src/main/resources/application-app-foundation.properties`
+file,
+and specify the properties described in [Specifying Application Properties](https://docs.pivotal.io/p-cloud-cache/1-13-beta/running-app.html#app-properties).
+Find the values needed in the service key and the truststore. 
 
-6. Build the app by running `mvn clean install`.
+6. Edit the app's `manifest_app_foundation.yml` file to specify the
+truststore password noted when you created the truststore.
 
-7. cf push the app by running `cf push -f manifest_app_foundation.yml`. 
+7. Build the app:
 
-10. **Interact with the app** by hitting the endpoints where the app is running (`cf app cloudcache-pizzastore` will show the route)        
+    ```
+    $ mvn clean install
+    ```
 
+8. Do a `cf login` that targets the app foundation's org and space.
+With a current working directory of `PCC-Sample-App-PizzaStore`,
+push the app to the app foundation, specifying the manifest:
+
+    ```
+    $ cf push -f manifest_app_foundation.yml
+    ```
+    Note the app's route (`APP-URL`).
+
+##### Use the running app:
+
+1. Interact with the running app by hitting the endpoints exposed by the app.
 
 ## 3. When your app is running <ins>off-platform</ins>
 
@@ -144,32 +170,6 @@ As a prerequisite make sure services gateway setup is done as described in [Sett
 
 6. **Interact with the app** by hitting the endpoints at http://localhost:8080           
    
-   
-### [Setting up service gateway](#settingup-service-gateway)
-
-Service Gateway is a Tanzu GemFire For VMs feature which lets you connect to the service instance
-from outside the foundation where the service instance is running. 
-To setup below steps have to be performed.
-
-##### Enable TCP Routing
-
-Refer to Refer TAS [docs](https://docs.pivotal.io/application-service/2-10/adminguide/enabling-tcp-routing.html) for details,
-at a high level you will have to 
-
-1.a. _Enable TCP routing in the TAS tile of OpsMan_ under _Networking_ tab.
-   
-1.b. _Enable Services Gateway on the TGF4VMs Tile_ under _Settings_ tab.
-
-1.c. Hit `Apply Changes` in Ops manager.
-
-1.d. _Create a TCP CF route_ as mentioned in [TAS docs](https://docs.pivotal.io/application-service/2-10/adminguide/enabling-tcp-routing.html).
-   
-   
-    cf create-shared-domain tcp.${BOSH_ENV_NAME}.cf-app.com --router-group default-tcp
-    cf quotas
-    cf update-quota default --reserved-route-ports 10
-    cf quotas
-    
 ### [Creating a Service Gateway enabled Service Instance](#sge-si)
 
 When you want to access the service instance from an app that running outside the foundation where the service instance is running,
