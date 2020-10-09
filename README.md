@@ -146,60 +146,49 @@ push the app to the app foundation, specifying the manifest:
 
 1. Interact with the running app by hitting the endpoints exposed by the app.
 
-## 3. When your app is running <ins>off-platform</ins>
+## Run the App Off Platform
 
-This is the case where your app is not running on a Cloud Foundary Foundation. It could be running on your local machine 
-or in a VM in the cloud.
+Running an app that is not on any Cloud Foundry foundation
+requires a service gateway.
+To set up a service gateway,
+follow the directions in
+[Configure a Service Gateway](https://docs.pivotal.io/p-cloud-cache/1-13-beta/configure-service-gateway.html).
 
-As a prerequisite make sure services gateway setup is done as described in [Setting up service gateway](#setting-up-service-gateway). 
+#### Run the app locally, and not on any foundation:
 
-#### Steps:
+1. Make note of the `SERVICE-INSTANCE-NAME` when you
+[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13-beta/create-instance.html#create-SI).
+Provide the optional parameters for enabling TLS and specifying
+the creation of a service gateway.
 
-1. Create a [Service Gateway enabled Service instance](#sge-si).
+2. Follow these instructions to
+[Create Truststore for the App](https://docs.pivotal.io/p-cloud-cache/1-13-beta/running-app.html#app-truststore).
+Note the password you set for the truststore.
 
-2. Follow steps to **[Create Truststore for TLS communication](#create-truststore-for-tls-communication)**.
-    
-3. Copy the truststore created in the above step and place it under the `resources` directory or to one of the locations SBDG expects the truststore to be in one of the 3 well known locations. Details are in SBDG [docs](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.3.2.RELEASE/reference/html5/#geode-security-ssl).
-      
-3. **Configure the app to talk to the service instance**
-     By configuring details in `application-off-platform.properties` file.  
+3. Copy the truststore to the `resources` directory within the app source code.
 
-4. **Build** the app by running `mvn clean install`.
+4. Follow these instructions to [Create a Service Key](https://docs.pivotal.io/p-cloud-cache/1-13-beta/accessing-instance.html#create-service-key). 
 
-5. **Run the app** by running `mvn spring-boot:run -Dspring-boot.run.profiles=off-platform -Dspring-boot.run.jvmArguments="-Djavax.net.ssl.trustStore=/tmp/mytruststore1.jks -Djavax.net.ssl.trustStorePassword=123456"`.
+5. Edit the app's `src/main/resources/application-off-platform.properties`
+file,
+and specify the properties described in [Specifying Application Properties](https://docs.pivotal.io/p-cloud-cache/1-13-beta/running-app.html#app-properties).
+Find the values needed in the service key and the truststore. 
 
-6. **Interact with the app** by hitting the endpoints at http://localhost:8080           
-   
-### [Creating a Service Gateway enabled Service Instance](#sge-si)
+6. Build the app:
 
-When you want to access the service instance from an app that running outside the foundation where the service instance is running,
-you enable the service gateway on the service instance. This can be acheived by creating a service gateway enabled service instance.
+    ```
+    $ mvn clean install
+    ```
 
-##### Steps
+5. Run the app locally:
 
-1. Login to Cloud Foundary CLI (CF CLI) where you want to create the service instance and target (`cf target`) to the org/space where you want to start the service.
+    ```
+    $ mvn spring-boot:run -Dspring-boot.run.profiles=off-platform -Dspring-boot.run.jvmArguments="-Djavax.net.ssl.trustStore=/tmp/mytruststore1.jks -Djavax.net.ssl.trustStorePassword=PASSWD-HERE"
+    ```
+    replacing `PASSWD-HERE` with the truststore password noted when
+    you created the truststore.
 
-2. Create a Service Instance which has a **Service Gateway**:
+##### Use the running app:
 
-   By running `cf create-service p-cloudcache <PLAN> <SERVICE_INSTANCE_NAME> -c {"tls":true, "service_gateway":true}`.
-   The flg `tls:true` is mandatory when you want to use service gateway feature.
-   The flg `service_gateway:true` the service instance to be accessible from outside the foundation.
-      
-3. Create a **service key**:
-   Run `cf service-key <SERVICE_INSTANCE_NAME> <KEY_NAME>`
- 
-### [Create Truststore for TLS communication](#create-truststore-for-tls-communication)
-
-Truststore is needed for apps to establish TLS connections with the service instance. 
-when the service instance is TLS enabled, app has to be able to establish a TLS connection with the service instance. For this purpose the app has to have a truststore with 2 CAs in it and below is how one can get them.
-   
-   1. Get `services/tls_ca`from credhub by running `credhub get --name="/services/tls_ca" -k certificate > services_ca.crt`.
-   
-   2. Get the CA from where your TLS termination occurs and store it in a `.crt` file. If your TLS terminates at gorouter then you can get the CA from `OpsManager`-> `Settings`-> `Advanced Options` -> `Download Root CA Cert`.
-   
-   3. Create a truststore which has both the above CAs
-    `keytool -importcert -file services_ca.crt -keystore mytruststore.jks -storetype JKS`
-    `keytool -importcert -alias root_ca -file root_ca_certificate -keystore mytruststore.jks -storetype JKS`.
-    
-   4. Move the truststore to resources directory. SBDG expects the truststore to be in one of the 3 well known locations. Details are in SBDG [docs](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.3.2.RELEASE/reference/html5/#geode-security-ssl).
- 
+1. Interact with the running app by hitting the endpoints exposed by the app
+at http://localhost:8080.
