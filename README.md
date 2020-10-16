@@ -95,7 +95,7 @@ Note the app's route (`APP-URL`).
 2. You can use the CLI interface, gfsh, to inspect the Tanzu GemFire
 or Geode cluster.
 Follow the instructions in [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13-beta/accessing-instance.html)
-to connect the the cluster using gfsh.
+to connect to the cluster using gfsh.
 
 ## Run the App in an App Foundation
 
