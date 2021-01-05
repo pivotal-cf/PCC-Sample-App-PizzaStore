@@ -57,7 +57,7 @@ Use a web browser to talk to the app at `http://localhost:8080`.
 
 An app that uses a Tanzu GemFire service instance may be
 located in one of three locations,
-as specified in [The App's Location](https://docs.pivotal.io/p-cloud-cache/1-13-beta/architecture.html#AppLocation).
+as specified in [The App's Location](https://docs.pivotal.io/p-cloud-cache/1-13/architecture.html#AppLocation).
 
 This app demonstrates all three possibilities of app location
 using Spring profiles.
@@ -71,7 +71,7 @@ Credentials and TLS configurations are auto applied.
 ##### Run the app as a services foundation app:
 
 1. Make note of the `SERVICE-INSTANCE-NAME` when you
-[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13-beta/create-instance.html#create-SI).
+[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13/create-instance.html#create-SI).
 The service instance may be TLS-enabled or not TLS-enabled.
 
 2. Modify the `manifest.yml` file to provide the service instance name.
@@ -94,7 +94,7 @@ Note the app's route (`APP-URL`).
 
 2. You can use the CLI interface, gfsh, to inspect the Tanzu GemFire
 or Geode cluster.
-Follow the instructions in [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13-beta/accessing-instance.html)
+Follow the instructions in [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13/accessing-instance.html)
 to connect to the cluster using gfsh.
 
 ## Run the App in an App Foundation
@@ -102,26 +102,26 @@ to connect to the cluster using gfsh.
 Running an app foundation app requires a service gateway.
 To set up a service gateway,
 follow the directions in
-[Configure a Service Gateway](https://docs.pivotal.io/p-cloud-cache/1-13-beta/configure-service-gateway.html).
+[Configure a Service Gateway](https://docs.pivotal.io/p-cloud-cache/1-13/configure-service-gateway.html).
 
 #### Run the app as an app foundation app:
 
 1. Make note of the `SERVICE-INSTANCE-NAME` when you
-[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13-beta/create-instance.html#create-SI).
+[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13/create-instance.html#create-SI).
 Provide the optional parameters for enabling TLS and specifying
 the creation of a service gateway.
 
 2. Follow these instructions to
-[Create Truststore for the App](https://docs.pivotal.io/p-cloud-cache/1-13-beta/running-app.html#app-truststore).
+[Create Truststore for the App](https://docs.pivotal.io/p-cloud-cache/1-13/running-app.html#app-truststore).
 Note the password you set for the truststore.
 
 3. Copy the truststore to the `resources` directory within the app source code.
 
-4. Follow these instructions to [Create a Service Key](https://docs.pivotal.io/p-cloud-cache/1-13-beta/accessing-instance.html#create-service-key). 
+4. Follow these instructions to [Create a Service Key](https://docs.pivotal.io/p-cloud-cache/1-13/accessing-instance.html#create-service-key). 
 
 5. Edit the app's `src/main/resources/application-app-foundation.properties`
 file,
-and specify the properties described in [Specifying Application Properties](https://docs.pivotal.io/p-cloud-cache/1-13-beta/running-app.html#app-properties).
+and specify the properties described in [Specifying Application Properties](https://docs.pivotal.io/p-cloud-cache/1-13/running-app.html#app-properties).
 Find the values needed in the service key and the truststore. 
 
 6. Edit the app's `manifest_app_foundation.yml` file to specify the
@@ -152,26 +152,26 @@ Running an app that is not on any Cloud Foundry foundation
 requires a service gateway.
 To set up a service gateway,
 follow the directions in
-[Configure a Service Gateway](https://docs.pivotal.io/p-cloud-cache/1-13-beta/configure-service-gateway.html).
+[Configure a Service Gateway](https://docs.pivotal.io/p-cloud-cache/1-13/configure-service-gateway.html).
 
 #### Run the app locally, and not on any foundation:
 
 1. Make note of the `SERVICE-INSTANCE-NAME` when you
-[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13-beta/create-instance.html#create-SI).
+[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13/create-instance.html#create-SI).
 Provide the optional parameters for enabling TLS and specifying
 the creation of a service gateway.
 
 2. Follow these instructions to
-[Create Truststore for the App](https://docs.pivotal.io/p-cloud-cache/1-13-beta/running-app.html#app-truststore).
+[Create Truststore for the App](https://docs.pivotal.io/p-cloud-cache/1-13/running-app.html#app-truststore).
 Note the password you set for the truststore.
 
 3. Copy the truststore to the `resources` directory within the app source code.
 
-4. Follow these instructions to [Create a Service Key](https://docs.pivotal.io/p-cloud-cache/1-13-beta/accessing-instance.html#create-service-key). 
+4. Follow these instructions to [Create a Service Key](https://docs.pivotal.io/p-cloud-cache/1-13/accessing-instance.html#create-service-key). 
 
 5. Edit the app's `src/main/resources/application-off-platform.properties`
 file,
-and specify the properties described in [Specifying Application Properties](https://docs.pivotal.io/p-cloud-cache/1-13-beta/running-app.html#app-properties).
+and specify the properties described in [Specifying Application Properties](https://docs.pivotal.io/p-cloud-cache/1-13/running-app.html#app-properties).
 Find the values needed in the service key and the truststore. 
 
 6. Build the app:
