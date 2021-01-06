@@ -16,6 +16,7 @@ package io.pivotal.cloudcache.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+//import org.springframework.geode.config.annotation.EnableClusterAware;
 
 
 /**
@@ -32,6 +33,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
+//@EnableClusterAware
 public class CloudcachePizzaStoreApplication {
 
     public static void main(String[] args) {

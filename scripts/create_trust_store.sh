@@ -36,7 +36,7 @@ print_green "fetching go router ca"
 host=$(jq -r .urls.gfsh < "${service_key}" | cut -d'/' -f3)
 echo "quit" | openssl s_client -showcerts -connect ${host}:443 |  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /tmp/go_router_ca.crt
 
-keystore="/Users/pivotal/workspace/PCC-Sample-App-PizzaStore/src/main/resources/services_gateway_truststore.jks"
+keystore="$HOME/workspace/PCC-Sample-App-PizzaStore/src/main/resources/services_gateway_truststore.jks"
 
 print_green "using key store ${keystore}"
 rm "${keystore}"
