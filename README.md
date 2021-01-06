@@ -39,8 +39,9 @@ The app exposes these endpoints:
 
 This Spring Boot app can run locally, 
 without having a Geode or Tanzu GemFire service instance.
-The SBDG annotation [`@EnableClusterAware`](https://docs.spring.io/spring-boot-data-geode-build/current/reference/html5/#geode-configuration-declarative-annotations-productivity-enableclusteraware)
-redirects cache operations operations to `LOCAL` regions
+Uncomment the SBDG annotation [`@EnableClusterAware`](https://docs.spring.io/spring-boot-data-geode-build/current/reference/html5/#geode-configuration-declarative-annotations-productivity-enableclusteraware)
+in the application soruce file `src/main/java/io/pivotal/cloudcache/app/config/PizzaConfig.java` 
+to enable redirecting cache operations operations to `LOCAL` regions
 when there is no service instance to talk to.
 It implements an embedded cache on the client.  
 
