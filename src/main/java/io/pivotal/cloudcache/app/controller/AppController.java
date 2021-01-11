@@ -69,7 +69,7 @@ public class AppController {
     }
 
     /**
-     * Health check
+     * Health checks
      */
     @GetMapping("/")
     public String ping() {
@@ -79,11 +79,17 @@ public class AppController {
                 .append("<p>Below are the endpoints available to you.</p>")
                 .append("<p><a href=\"/preheatOven\">/preheatOven</a>&nbsp;-&gt;&nbsp;Loads pre defined Pizzas into a GemFire region.</p>")
                 .append("<p><a href=\"/pizzas\">/pizzas</a>&nbsp;-&gt; Gets all Pizzas from GemFire region.</p>")
-//                .append("<p><a href=\"pizzas/{name}\">/pizzas/{name}</a> -&gt; Gets all Pizzas from GemFire region.<br /><br /></p>")
-//                .append("<p><br /><a href=\"pizzas/order/{name}\">pizzas/order/{name}</a> -&gt;&nbsp;Orders a given pizza. example `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&amp;toppings=CHEESE,PEPPERONI,MUSHROOM`</p>")
+                .append("<p><a href=\"pizzas/{name}\">/pizzas/{name}</a> -&gt; Gets a Pizza from GemFire region.<br /><br /></p>")
+                .append("<p><br /><a href=\"pizzas/order/{name}\">pizzas/order/{name}</a> -&gt;&nbsp;Orders a given pizza. example `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&amp;toppings=CHEESE,PEPPERONI,MUSHROOM`</p>")
                 .append("<p><a href=\"/cleanSlate\">/cleanSlate</a> -&gt; Deletes all Pizzas from GemFire region.</p>");
 
         return sb.toString();
+    }
+
+    // Simple endpoint for testing
+    @GetMapping("/ping")
+    public String pingPong() {
+        return "<h1>PONG!</h1>";
     }
 
     /**
