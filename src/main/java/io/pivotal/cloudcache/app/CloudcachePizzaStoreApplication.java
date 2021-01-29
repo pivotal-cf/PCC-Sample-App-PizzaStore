@@ -16,10 +16,8 @@ package io.pivotal.cloudcache.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.gemfire.config.annotation.EnableClusterConfiguration;
-import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
-import org.springframework.geode.config.annotation.EnableDurableClient;
-import org.springframework.geode.config.annotation.EnableClusterAware;
+//import org.springframework.geode.config.annotation.EnableClusterAware;
+
 
 /**
  * This class runs the sample pizza store application.
@@ -35,12 +33,12 @@ import org.springframework.geode.config.annotation.EnableClusterAware;
  *
  */
 @SpringBootApplication
-@EnableDurableClient(id = "pizza-store")
-@EnableClusterAware
-@EnableEntityDefinedRegions
+//@EnableClusterAware
 public class CloudcachePizzaStoreApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CloudcachePizzaStoreApplication.class, args);
     }
+
+
 }

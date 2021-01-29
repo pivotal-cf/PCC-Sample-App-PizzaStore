@@ -6,5 +6,5 @@ applications:
     - https://github.com/cloudfoundry/java-buildpack.git
   random-route: true
   services:
-#    - SERVICE_INSTANCE
-
+  env:
+    SPRING_PROFILES_ACTIVE: app-foundation

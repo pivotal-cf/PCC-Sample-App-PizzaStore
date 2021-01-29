@@ -1,277 +1,195 @@
-# Sample Spring Boot Application for VMware Tanzu GemFire
+# Example Spring Boot Application for VMware Tanzu GemFire For VMs
 
-This versioned example app for VMware Tanzu GemFire is
-a Spring Boot app that can be used with
-a Tanzu GemFire service instance.
-That service instance may be configured either with or without TLS encryption
-enabled.
+This branch demonstrates deployment scenarios for an app,
+and how the app's location affects communication with a Tanzu GemFire For VMs
+service instance.
 
-The app uses [Spring Boot Data Geode](https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/1.2.6.RELEASE/reference/htmlsingle/)
-(SBDG) to talk to the Tanzu GemFire service instance.
-The app provides a REST interface that lets a user view pizzas, place orders, 
-and view an order.
-The app leverages Spring Web MVC controllers
-to expose data access operations.
+## About the App
 
+This Spring Boot app uses Spring Boot for Apache Geode & Pivotal GemFire (SBDG).
+The app talks to a Tanzu GemFire service instance.
+The app does create, read, and delete CRUD operations on data held
+in a region within service instance.
 
-Pizzas are stored in the Tanzu GemFire servers running within
-the Tanzu GemFire service instance.
-The app uses _Spring Data Repositories_ to store,
-access, and query data stored on the servers.
-The app stores data in two repositories `Pizza` and `Name` (repositories are referred to as regions in Tanzu GemFire).
-See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-11/index.html#GFBasics) for the briefest of introductions to Tanzu GemFire,
-and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-11/region-design.html) for a quick tour of Tanzu GemFire regions.
+The app exposes these endpoints:  
+    
+-  `https://APP-URL/preheatOven`  
+        
+    Creates three pre-defined pizzas, which adds them to the region.
+        
+-  `https://APP-URL/pizzas` 
+    
+    Gets all pizzas from the region.
+        
+-  `https://APP-URL/pizzas/{name}`
+    
+    Gets details of a pizza specified by its name.
+         
+-  `https://APP-URL/pizzas/order/{name}`
+    
+    Orders a given pizza, which does a create operation. 
+    For example: `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&toppings=CHEESE,PEPPERONI,MUSHROOM` orders a pizza named `myCustomPizza`,
+    which has `MARINARA` sauce and three toppings. 
+   
+-  `https://APP-URL/cleanSlate` 
+        
+    Deletes all pizzas from the region.
 
-This app performs operations on two regions:
+## Try the App in a Local Environment
 
-- The `Pizza` region represents the pizzas on order.
-Each pizza has a unique name used as the key for the region entry.
-The value portion of the key/value entry is the specification
-of a sauce and any toppings on a single pizza.
-- The `Name` region  is populated by the unique name associated with
-the pizzas with pesto as a sauce.
-A Tanzu GemFire continuous query triggers a put to the `Name` region whenever
-a pizza with pesto sauce is added.
-See [Continuous Querying](http://gemfire.docs.pivotal.io/geode/developing/continuous_querying/chapter_overview.html) for an extensive explanation
-of Tanzu GemFire continuous queries.
+This Spring Boot app can run locally, 
+without having a Geode or Tanzu GemFire service instance.
+Uncomment the SBDG annotation [`@EnableClusterAware`](https://docs.spring.io/spring-boot-data-geode-build/current/reference/html5/#geode-configuration-declarative-annotations-productivity-enableclusteraware)
+in the application soruce file `src/main/java/io/pivotal/cloudcache/app/config/PizzaConfig.java` 
+to enable redirecting cache operations operations to `LOCAL` regions
+when there is no service instance to talk to.
+It implements an embedded cache on the client.  
 
-Pizza sauces are one of:
-
-- ALFREDO
-- BARBECUE
-- HUMMUS
-- MARINARA
-- PESTO
-- TAPENADE
-- TOMATO
-
-Pizza toppings are any of:
-
-- ARUGULA
-- BACON
-- BANANA_PEPPERS
-- BLACK_OLIVES
-- CHEESE
-- CHERRY_TOMATOES
-- CHICKEN
-- GREEN_OLIVES
-- GREEN_PEPPERS
-- JALAPENO
-- MUSHROOM
-- ONIONS
-- PARMESAN
-- PEPPERONI
-- SAUSAGE
-
-## Prepare to Run the Pizza App
-
-The app runs with a Tanzu GemFire service instance.
-This app is versioned, and branches of this git repository correspond to
-the Tanzu GemFire version that this app will work with.
-Check out and run the app from the branch that matches your Tanzu GemFire
-tile version.
-For example, if your Tanzu GemFire service instance is version 1.11,
-check out this repository's `release/1.11` branch.
-This is important because the procedure to run the app differs slightly,
-based on whether TLS encryption is enabled or not.
-Follow the appropriate setup procedure.
-
-### Prerequisites
-1. You should be logged in to your cf environment. Please see [cf login](https://cli.cloudfoundry.org/en-US/cf/login.html)
-2. The CF environment should have a Tanzu Gemfire Tile installed.
-
-### Prepare with TLS Communication
-
-1. Create the Tanzu GemFire service instance with TLS enabled:
-
-    ```
-    $ cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE -c '{"tls":true}'
-    ```
-    Note the name of your `SERVICE_INSTANCE`,
-    as it will be used in the `manifest.yml` file.
-
-2. Create the regions required by the app using `gfsh`:
-
-    Connect to the cluster via `gfsh`. Please see [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-12/accessing-instance.html) for detailed instructions on connecting to your service instance.
-
-    ```
-    gfsh>create region --name=Pizza --type=REPLICATE
-    gfsh>create region --name=Name --type=REPLICATE
-    ```
-
-3. Configure the app to use SSL by adding this property to `src/main/resources/application.properties`:
-
-    ```
-    spring.data.gemfire.security.ssl.use-default-context=true
-    ```
-
-4. Modify the `manifest.yml` file such that the service instance
-is no longer commented out and has the name of
-your Tanzu GemFire service instance.
-If your service instance had the name `dev-instance-1`,
-then the `services` portion of the `manifest.yml` file would be:
-
-    ```
-      services:
-       - dev-instance-1
-    ```
-
-### Prepare Without TLS Communication
-
-The Spring Boot framework detects whether the service instance has TLS enabled or not,
-so the same manifest is used when pushing the app as is shown above.
-
-1. Create a Tanzu GemFire service instance without enabling TLS encryption:
-
-    ```
-    cf create-service p-cloudcache PLAN_NAME SERVICE_INSTANCE
-    ```
-    Note the name of your `SERVICE_INSTANCE`,
-    as it will be used in the `manifest.yml` file.
-
-2. Create the regions required by the app using `gfsh`:
-
-    Connect to the cluster. See [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-12/accessing-instance.html) for detailed instructions on connecting to your service instance.
-
-    ```
-    gfsh>create region --name=Pizza --type=REPLICATE
-    gfsh>create region --name=Name --type=REPLICATE
-    ```
-
-3. Modify the `manifest.yml` file such that the service instance
-is no longer commented out and has the name of
-your Tanzu GemFire service instance.
-If your service instance had the name `dev-instance-1`,
-then the `services` portion of the `manifest.yml` file would be:
-
-    ```
-      services:
-       - dev-instance-1
-    ```
-
-## Build and Run the Pizza App
-
-Build and cf push the app. With current working directory of
-`PCC-Sample-App-PizzaStore`:
-
-```
-$ ./mvnw clean install
-$ cf push
-```
-
-## REST API endpoints
-
-All REST API endpoints are accessible using HTTP GET.  This is not very RESTful, but is convenient
-when accessing this app from your web browser.
-
-Run the command:
-
-```
-$ cf apps
-```
-
-to acquire your app's APP-URL.
-Use the APP-URL with the following endpoints:
-
-- `GET /ping`
-
-    Responds with an HTTP status code of `200 - OK` and an HTTP message body
-    of "PONG!" if the app is running correctly.
-
-    ```
-    $ curl -k https://APP-URL/ping
-    ```
-
-- `GET /preheatOven`
-
-    Loads the `Pizza` region with three pre-defined pizzas.
-    This REST API endpoint calls `Repository.save()` for each pizza
-    and verifies the pizzas with the `Repository.findById(..)` on the
-    `Pizza` region to verify that everything was set up properly.
-    It creates these pizzas:
-
-    1. tomato sauce and a cheese topping
-    2. Alfredo sauce, and chicken and arugula toppings
-    3. pesto sauce, and chicken, cherry tomatoes and parmesan cheese toppings
+To run the app in the local environment,
  
-    Responds with an HTTP message body of "OVEN HEATED!".
+```
+mvn spring-boot:run
+```
+Ignore the `ConnectException: Connection refused`
+from the root of this repository.
+Use a web browser to talk to the app at `http://localhost:8080`.
+
+## App Location
+
+An app that uses a Tanzu GemFire service instance may be
+located in one of three locations,
+as specified in [The App's Location](https://docs.pivotal.io/p-cloud-cache/1-13/architecture.html#AppLocation).
+
+This app demonstrates all three possibilities of app location
+using Spring profiles.
+
+## Run the App in the Same Foundation as the Service Instance (Services Foundation App)
+
+When the app and the service instance are in the same foundation,
+SBDG eliminates the need to do any security configuration.
+Credentials and TLS configurations are auto applied. 
+
+##### Run the app as a services foundation app:
+
+1. Make note of the `SERVICE-INSTANCE-NAME` when you
+[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13/create-instance.html#create-SI).
+The service instance may be TLS-enabled or not TLS-enabled.
+
+2. Modify the `manifest.yml` file to provide the service instance name.
+Replace `SERVICE_INSTANCE` with your noted `SERVICE-INSTANCE-NAME`.
+Remove the `#` character so that the line is no longer a comment.
+
+3. Build the app:
 
     ```
-    $ curl -k https://APP-URL/preheatOven
+    $ mvn clean install
     ```
 
-- `GET /pizzas`
+4. With a current working directory of `PCC-Sample-App-PizzaStore`,
+push the app to your services foundation with a `cf push` command.
+Note the app's route (`APP-URL`).
 
-    Lists the current contents of the `Pizza` region, formatted as
-    a JSON array containing `Pizza` objects.
-    Returns "No Pizzas Found" if the region is empty.
+##### Use the running app:
+
+1. Interact with the running app by hitting the endpoints exposed by the app.
+
+2. You can use the CLI interface, gfsh, to inspect the Tanzu GemFire
+or Geode cluster.
+Follow the instructions in [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13/accessing-instance.html)
+to connect to the cluster using gfsh.
+
+## Run the App in an App Foundation
+
+Running an app foundation app requires a service gateway.
+To set up a service gateway,
+follow the directions in
+[Configure a Service Gateway](https://docs.pivotal.io/p-cloud-cache/1-13/configure-service-gateway.html).
+
+#### Run the app as an app foundation app:
+
+1. Make note of the `SERVICE-INSTANCE-NAME` when you
+[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13/create-instance.html#create-SI).
+Provide the optional parameters for enabling TLS and specifying
+the creation of a service gateway.
+
+2. Follow these instructions to
+[Create Truststore for the App](https://docs.pivotal.io/p-cloud-cache/1-13/running-app.html#app-truststore).
+Note the password you set for the truststore.
+
+3. Copy the truststore to the `resources` directory within the app source code.
+
+4. Follow these instructions to [Create a Service Key](https://docs.pivotal.io/p-cloud-cache/1-13/accessing-instance.html#create-service-key). 
+
+5. Edit the app's `src/main/resources/application-app-foundation.properties`
+file,
+and specify the properties described in [Specifying Application Properties](https://docs.pivotal.io/p-cloud-cache/1-13/running-app.html#app-properties).
+Find the values needed in the service key and the truststore. 
+
+6. Edit the app's `manifest_app_foundation.yml` file to specify the
+truststore password noted when you created the truststore.
+
+7. Build the app:
 
     ```
-    $ curl -k https://APP-URL/pizzas
+    $ mvn clean install
     ```
 
-- `GET /pizzas/{name}`
-     
-    Returns the pizza with the specified name.
-    Returned pizza is in JSON form.
-    Returns "Pizza \[name\] Not Found"
-    if no pizza with the given name exists.
+8. Do a `cf login` that targets the app foundation's org and space.
+With a current working directory of `PCC-Sample-App-PizzaStore`,
+push the app to the app foundation, specifying the manifest:
 
     ```
-    curl -k https://APP-URL/pizzas/plain
+    $ cf push -f manifest_app_foundation.yml
+    ```
+    Note the app's route (`APP-URL`).
+
+##### Use the running app:
+
+1. Interact with the running app by hitting the endpoints exposed by the app.
+
+## Run the App Off Platform
+
+Running an app that is not on any Cloud Foundry foundation
+requires a service gateway.
+To set up a service gateway,
+follow the directions in
+[Configure a Service Gateway](https://docs.pivotal.io/p-cloud-cache/1-13/configure-service-gateway.html).
+
+#### Run the app locally, and not on any foundation:
+
+1. Make note of the `SERVICE-INSTANCE-NAME` when you
+[Create a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13/create-instance.html#create-SI).
+Provide the optional parameters for enabling TLS and specifying
+the creation of a service gateway.
+
+2. Follow these instructions to
+[Create Truststore for the App](https://docs.pivotal.io/p-cloud-cache/1-13/running-app.html#app-truststore).
+Note the password you set for the truststore.
+
+3. Copy the truststore to the `resources` directory within the app source code.
+
+4. Follow these instructions to [Create a Service Key](https://docs.pivotal.io/p-cloud-cache/1-13/accessing-instance.html#create-service-key). 
+
+5. Edit the app's `src/main/resources/application-off-platform.properties`
+file,
+and specify the properties described in [Specifying Application Properties](https://docs.pivotal.io/p-cloud-cache/1-13/running-app.html#app-properties).
+Find the values needed in the service key and the truststore. 
+
+6. Build the app:
+
+    ```
+    $ mvn clean install
     ```
 
-- `GET /pizzas/order/{name}\[?sauce=<sauce>\[&toppings=\<topping-1>,\<topping-2>,...,\<topping-N>]]`
-
-    Adds a pizza order for the specified name,
-    with an optional `sauce` (defaults to `TOMATO`)
-    and optional `toppings` (defaults to `CHEESE`).
-    Changes the pizza order if the name is already present in
-    the pizzas on order.
+5. Run the app locally:
 
     ```
-    curl -k https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&toppings=CHEESE,PEPPERONI,MUSHROOM
+    $ mvn spring-boot:run -Dspring-boot.run.profiles=off-platform -Dspring-boot.run.jvmArguments="-Djavax.net.ssl.trustStore=/tmp/mytruststore1.jks -Djavax.net.ssl.trustStorePassword=PASSWD-HERE"
     ```
+    replacing `PASSWD-HERE` with the truststore password noted when
+    you created the truststore.
 
-- `GET /pizzas/pestoOrder/{name}`
+##### Use the running app:
 
-    Bakes a pesto sauce pizza with chicken, cherry tomatoes, and parmesan
-    cheese toppings.
-
-    ```
-    curl -k https://APP-URL/pizzas/pestoOrder/myPestoPizza
-    ```
-
-- `GET /cleanSlate`
-
-    Removes all data from the `Pizza` and `Name` regions.
-
-    ```
-    $  curl -k https://APP-URL/cleanSlate
-    ```
-
-## Continuous Queries
-
-A Tanzu GemFire **Continuous Query** allows an app to register interest
-in events.
-Interest is expressed with an OQL query on regions containing the
-data interests.
-This is ideal, since a developer can specify
-complex criteria in an OQL query predicate for the exact data the app
-is interested in receiving notifications for.
-Thus, when a data event occurs matching the conditions expressed
-in the query predicate,
-an event will be returned with the data.
-
-This Spring Boot app registers two continuous queries
-on the `Pizza` region.
-
-- Whenever any pizza is ordered, the event is logged to `System.err`.
-
-- When any pesto pizza is ordered, the event triggers putting the name of
-the pizza in the `Name` region.
-
-For more details, see the Tanzu GemFire documentation section on [Continuous Querying](http://gemfire.docs.pivotal.io/geode/developing/continuous_querying/chapter_overview.html).
-
-For more details on how to use continuous queries in your Spring Boot apps see [Configuring Continuous Queries](https://docs.spring.io/spring-data/gemfire/docs/current/reference/html/#bootstrap-annotation-config-continuous-queries).
-
+1. Interact with the running app by hitting the endpoints exposed by the app
+at http://localhost:8080.
