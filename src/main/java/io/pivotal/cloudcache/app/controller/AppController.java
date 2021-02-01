@@ -76,15 +76,18 @@ public class AppController {
 
         StringBuilder sb = new StringBuilder();
         sb.append("<h1>Welcome to Pizza Store!</h1>")
-                .append("<p>Below are the endpoints available to you.</p>")
-                .append("<p><a href=\"/preheatOven\">/preheatOven</a>&nbsp;-&gt;&nbsp;Loads pre defined Pizzas into a GemFire region.</p>")
-                .append("<p><a href=\"/pizzas\">/pizzas</a>&nbsp;-&gt; Gets all Pizzas from GemFire region.</p>")
-                .append("<p>/pizzas/{name} -&gt; Gets a Pizza from GemFire region.<br /></p>")
-//                .append("<p><a href=\"/pizzas/{name}\">/pizzas/{name}</a> -&gt; Gets a Pizza from GemFire region.<br /><br /></p>")
-                .append("<p>/pizzas/order/{name} -&gt;&nbsp;Orders a given pizza. example `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&amp;toppings=CHEESE,PEPPERONI,MUSHROOM`</p>")
-//                .append("<p><a href=\"/pizzas/order/{name}\">/pizzas/order/{name}</a> -&gt;&nbsp;Orders a given pizza. example `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&amp;toppings=CHEESE,PEPPERONI,MUSHROOM`</p>")
-                .append("<p>/pizzas/pestoOrder/{name} -&gt;&nbsp;Orders a pesto pizza. example `https://APP-URL/pizzas/pestoOrder/myPesto`</p>")
-                .append("<p><a href=\"/cleanSlate\">/cleanSlate</a> -&gt; Deletes all Pizzas from GemFire region.</p>");
+            .append("<p>Below are the endpoints available to you.</p>")
+            .append("<p><a href=\"/\">/</a>&nbsp;-&gt;&nbsp;App healthcheck and usage.</p>")
+            .append("<p><a href=\"/ping\">/ping</a>&nbsp;-&gt;&nbsp;App healthcheck. Responds with an HTTP status code of `200 - OK` and an HTTP message body\n"
+                    + "    of \"PONG!\" if the app is running correctly.\n</p>")
+            .append("<p><a href=\"/preheatOven\">/preheatOven</a>&nbsp;-&gt;&nbsp;Loads pre defined Pizzas into a GemFire region.</p>")
+            .append("<p><a href=\"/pizzas\">/pizzas</a>&nbsp;-&gt; Gets all Pizzas from GemFire region.</p>")
+            .append("<p>/pizzas/{name} -&gt; Gets a Pizza from GemFire region.<br /></p>")
+//            .append("<p><a href=\"/pizzas/{name}\">/pizzas/{name}</a> -&gt; Gets a Pizza from GemFire region.<br /><br /></p>")
+            .append("<p>/pizzas/order/{name} -&gt;&nbsp;Orders a given pizza. example `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&amp;toppings=CHEESE,PEPPERONI,MUSHROOM`</p>")
+//            .append("<p><a href=\"/pizzas/order/{name}\">/pizzas/order/{name}</a> -&gt;&nbsp;Orders a given pizza. example `https://APP-URL/pizzas/order/myCustomPizza?sauce=MARINARA&amp;toppings=CHEESE,PEPPERONI,MUSHROOM`</p>")
+            .append("<p>/pizzas/pestoOrder/{name} -&gt;&nbsp;Orders a pesto pizza. example `https://APP-URL/pizzas/pestoOrder/myPesto`</p>")
+            .append("<p><a href=\"/cleanSlate\">/cleanSlate</a> -&gt; Deletes all Pizzas from GemFire region.</p>");
 
         return sb.toString();
     }
