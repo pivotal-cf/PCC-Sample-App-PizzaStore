@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.gemfire.config.annotation.EnableClusterConfiguration;
 import org.springframework.data.gemfire.config.annotation.EnableEntityDefinedRegions;
 import org.springframework.data.gemfire.config.support.RestTemplateConfigurer;
+import org.springframework.geode.config.annotation.EnableDurableClient;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.ResourceUtils;
@@ -24,6 +25,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 @Configuration
+@EnableDurableClient(id = "pizza-store")
 @EnableEntityDefinedRegions(basePackages = "io.pivotal.cloudcache.app.model")
 @EnableClusterConfiguration(useHttp = true)
 public class PizzaConfig {
