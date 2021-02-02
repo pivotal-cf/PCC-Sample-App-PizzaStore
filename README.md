@@ -1,18 +1,43 @@
 # Example Spring Boot Application for VMware Tanzu GemFire For VMs
 
+This versioned example app for VMware Tanzu GemFire is
+a Spring Boot app that can be used with
+a Tanzu GemFire service instance.
 This branch demonstrates deployment scenarios for an app,
 and how the app's location affects communication with a Tanzu GemFire For VMs
 service instance.
 
-## About the App
+The app uses [Spring Boot for Apache Geode](https://docs.spring.io/spring-boot-data-geode-build/1.4.0/reference/html5/)
+(SBDG) to talk to the Tanzu GemFire service instance.
+The app provides a REST interface that lets a user view pizzas, place orders,
+and view an order.
+The app leverages Spring Web MVC controllers
+to expose data access operations.
 
-This Spring Boot app uses Spring Boot for Apache Geode & Pivotal GemFire (SBDG).
+Pizzas are stored in the Tanzu GemFire servers running within
+the Tanzu GemFire service instance.
+The app uses a _Spring Data Repository to store,
+access, and query data stored on the servers.
+The app stores data in the `Pizza` repository (repositories are referred to as regions in Tanzu GemFire).
+See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-13/index.html#GFBasics) for the briefest of introductions to Tanzu GemFire,
+and see [Region Design](https://docs.pivotal.io/p-cloud-cache/1-13/region-design.html) for a quick tour of Tanzu GemFire regions.
+
+## Interacting With the App
+
 The app talks to a Tanzu GemFire service instance.
 The app does create, read, and delete CRUD operations on data held
 in a region within service instance.
 
 The app exposes these endpoints:  
     
+-  `https://APP-URL/`  
+        
+    Prints the available app endpoints.
+        
+-  `https://APP-URL/ping`  
+        
+    Prints **PONG!** if the app is running.
+        
 -  `https://APP-URL/preheatOven`  
         
     Creates three pre-defined pizzas, which adds them to the region.
@@ -35,12 +60,24 @@ The app exposes these endpoints:
         
     Deletes all pizzas from the region.
 
-## Try the App in a Local Environment
+## App Location
+
+An app that uses a Tanzu GemFire service instance may be
+located in one of three locations,
+as specified in [The App's Location](https://docs.pivotal.io/p-cloud-cache/1-13/architecture.html#AppLocation).
+This app demonstrates all three possibilities of app location
+using Spring profiles.
+
+In addition, the app may be run locally,
+without having a Geode or Tanzu GemFire service instance.
+All four running environments are described.
+
+## Run the App in a Local Environment
 
 This Spring Boot app can run locally, 
-without having a Geode or Tanzu GemFire service instance.
-Uncomment the SBDG annotation [`@EnableClusterAware`](https://docs.spring.io/spring-boot-data-geode-build/current/reference/html5/#geode-configuration-declarative-annotations-productivity-enableclusteraware)
-in the application soruce file `src/main/java/io/pivotal/cloudcache/app/config/PizzaConfig.java` 
+without having an Apache Geode or Tanzu GemFire service instance.
+Uncomment the annotation [`@EnableClusterAware`](https://docs.spring.io/spring-boot-data-geode-build/current/reference/html5/#geode-configuration-declarative-annotations-productivity-enableclusteraware)
+in the app's source file `src/main/java/io/pivotal/cloudcache/app/config/PizzaConfig.java` 
 to enable redirecting cache operations operations to `LOCAL` regions
 when there is no service instance to talk to.
 It implements an embedded cache on the client.  
@@ -52,16 +89,10 @@ mvn spring-boot:run
 ```
 Ignore the `ConnectException: Connection refused`
 from the root of this repository.
+
+##### Use the running app:
+
 Use a web browser to talk to the app at `http://localhost:8080`.
-
-## App Location
-
-An app that uses a Tanzu GemFire service instance may be
-located in one of three locations,
-as specified in [The App's Location](https://docs.pivotal.io/p-cloud-cache/1-13/architecture.html#AppLocation).
-
-This app demonstrates all three possibilities of app location
-using Spring profiles.
 
 ## Run the App in the Same Foundation as the Service Instance (Services Foundation App)
 
@@ -91,10 +122,9 @@ Note the app's route (`APP-URL`).
 
 ##### Use the running app:
 
-1. Interact with the running app by hitting the endpoints exposed by the app.
+Interact with the running app by hitting the endpoints exposed by the app.
 
-2. You can use the CLI interface, gfsh, to inspect the Tanzu GemFire
-or Geode cluster.
+You can use gfsh to inspect the service instance.
 Follow the instructions in [Accessing a Service Instance](https://docs.pivotal.io/p-cloud-cache/1-13/accessing-instance.html)
 to connect to the cluster using gfsh.
 
@@ -145,7 +175,7 @@ push the app to the app foundation, specifying the manifest:
 
 ##### Use the running app:
 
-1. Interact with the running app by hitting the endpoints exposed by the app.
+Interact with the running app by hitting the endpoints exposed by the app.
 
 ## Run the App Off Platform
 
@@ -191,5 +221,5 @@ Find the values needed in the service key and the truststore.
 
 ##### Use the running app:
 
-1. Interact with the running app by hitting the endpoints exposed by the app
+Interact with the running app by hitting the endpoints exposed by the app
 at http://localhost:8080.
