@@ -97,7 +97,7 @@ It implements an embedded cache on the client.
 To run the app in the local environment,
  
 ```
-$ ./mvn spring-boot:run
+$ ./mvnw spring-boot:run
 ```
 Ignore the `ConnectException: Connection refused`
 from the root of this repository.
@@ -125,7 +125,7 @@ Remove the `#` character so that the line is no longer a comment.
 3. Build the app:
 
     ```
-    $ ./mvn clean install
+    $ ./mvnw clean install
     ```
 
 4. With a current working directory of `PCC-Sample-App-PizzaStore`,
@@ -173,7 +173,7 @@ truststore password noted when you created the truststore.
 7. Build the app:
 
     ```
-    $ ./mvn clean install
+    $ ./mvnw clean install
     ```
 
 8. Do a `cf login` that targets the app foundation's org and space.
@@ -220,13 +220,13 @@ Find the values needed in the service key and the truststore.
 6. Build the app:
 
     ```
-    $ ./mvn clean install
+    $ ./mvnw clean install
     ```
 
 5. Run the app locally:
 
     ```
-    $ ./mvn spring-boot:run -Dspring-boot.run.profiles=off-platform -Dspring-boot.run.jvmArguments="-Djavax.net.ssl.trustStore=/tmp/mytruststore1.jks -Djavax.net.ssl.trustStorePassword=PASSWD-HERE"
+    $ ./mvnw spring-boot:run -Dspring-boot.run.profiles=off-platform -Dspring-boot.run.jvmArguments="-Djavax.net.ssl.trustStore=/tmp/mytruststore1.jks -Djavax.net.ssl.trustStorePassword=PASSWD-HERE"
     ```
     replacing `PASSWD-HERE` with the truststore password noted when
     you created the truststore.
