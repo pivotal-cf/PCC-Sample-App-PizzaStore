@@ -6,6 +6,12 @@ a Tanzu GemFire service instance.
 This branch demonstrates deployment scenarios for an app,
 and how the app's location affects communication with a Tanzu GemFire For VMs
 service instance.
+Branches of this git repository correspond to the Tanzu GemFire version
+that this app will work with.
+Check out and run the app from the branch that matches
+your Tanzu GemFire tile version.
+For example, if your Tanzu GemFire service instance is version 1.13,
+check out this repository's release/1.13 branch.
 
 The app uses [Spring Boot for Apache Geode](https://docs.spring.io/spring-boot-data-geode-build/1.4.0/reference/html5/)
 (SBDG) to talk to the Tanzu GemFire service instance.
@@ -59,6 +65,12 @@ The app exposes these endpoints:
 -  `https://APP-URL/cleanSlate` 
         
     Deletes all pizzas from the region.
+
+## Prerequisites
+
+- The [cf CLI](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) will be used.
+- Log in to your CF environment.
+- The CF environment should have a Tanzu GemFire for VMs Tile installed.
 
 ## App Location
 
