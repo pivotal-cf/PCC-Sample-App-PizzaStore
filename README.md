@@ -22,7 +22,7 @@ to expose data access operations.
 
 Pizzas are stored in the Tanzu GemFire servers running within
 the Tanzu GemFire service instance.
-The app uses a _Spring Data Repository to store,
+The app uses a Spring Data Repository to store,
 access, and query data stored on the servers.
 The app stores data in the `Pizza` repository (repositories are referred to as regions in Tanzu GemFire).
 See [GemFire Basics](https://docs.pivotal.io/p-cloud-cache/1-13/index.html#GFBasics) for the briefest of introductions to Tanzu GemFire,
@@ -69,8 +69,8 @@ The app exposes these endpoints:
 ## Prerequisites
 
 - The [cf CLI](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) will be used.
-- Log in to your CF environment.
-- The CF environment should have a Tanzu GemFire for VMs Tile installed.
+- Log in to your CF (TAS) environment.
+- The CF (TAS) environment should have a Tanzu GemFire for VMs Tile installed.
 
 ## App Location
 
