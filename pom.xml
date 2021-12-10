@@ -17,6 +17,13 @@
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>gemfire-release-repo</id>
+			<name>Pivotal Maven Repo</name>
+			<url>https://repo.pivotal.io/gemfire-release-local</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 
