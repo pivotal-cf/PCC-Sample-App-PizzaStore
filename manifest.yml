@@ -4,8 +4,6 @@ applications:
   path: target/PCC-Sample-App-PizzaStore-1.0.0-SNAPSHOT.jar
   buildpacks:
     - https://github.com/cloudfoundry/java-buildpack.git
-  env:
-    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
   random-route: true
   services:
 #    - SERVICE_INSTANCE
