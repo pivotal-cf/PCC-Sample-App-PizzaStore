@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.6</version>
+		<version>3.3.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.pivotal.cloudcache.sample</groupId>
@@ -15,30 +15,41 @@
 	<description>Spring Boot application using Pivotal Cloud Cache on Pivotal Platform</description>
 
 	<properties>
-		<java.version>1.8</java.version>
 		<log4j2.version>2.17.1</log4j2.version>
+		<springBootForGemFire.version>2.0.3</springBootForGemFire.version>
+		<vmwareGemFire.version>10.1.2</vmwareGemFire.version>
 	</properties>
-
 	<dependencies>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
-			<groupId>org.springframework.geode</groupId>
-			<artifactId>spring-geode-starter</artifactId>
-			<version>1.6.2</version>
+			<groupId>com.vmware.gemfire</groupId>
+			<artifactId>spring-boot-3.3-gemfire-10.1</artifactId>
+			<version>${springBootForGemFire.version}</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.13</version>
+			<groupId>com.vmware.gemfire</groupId>
+			<artifactId>vmware-gemfire</artifactId>
+			<version>${vmwareGemFire.version}</version>
+			<type>tgz</type>
 		</dependency>
-
+		<dependency>
+			<groupId>com.vmware.gemfire</groupId>
+			<artifactId>gemfire-core</artifactId>
+			<version>${vmwareGemFire.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.gemfire</groupId>
+			<artifactId>gemfire-cq</artifactId>
+			<version>${vmwareGemFire.version}</version>
+		</dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.3</version> <!-- You can check the latest version -->
+        </dependency>
 		<!--		test and support dependencies below -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
