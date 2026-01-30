@@ -16,8 +16,8 @@
 
 	<properties>
 		<log4j2.version>2.17.1</log4j2.version>
-		<springBootForGemFire.version>2.0.3</springBootForGemFire.version>
-		<vmwareGemFire.version>10.1.2</vmwareGemFire.version>
+		<springBootForGemFire.version>2.0.0</springBootForGemFire.version>
+		<vmwareGemFire.version>10.2.1</vmwareGemFire.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -25,8 +25,23 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>2.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>2.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-lang</artifactId>
+			<version>2.0.5</version>
+		</dependency>
+		<dependency>
 			<groupId>com.vmware.gemfire</groupId>
-			<artifactId>spring-boot-3.3-gemfire-10.1</artifactId>
+			<artifactId>spring-boot-3.5-gemfire-10.2</artifactId>
 			<version>${springBootForGemFire.version}</version>
 		</dependency>
 		<dependency>
@@ -65,7 +80,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.22</version>
+			<version>1.18.30</version>
 		</dependency>
 	</dependencies>
 
