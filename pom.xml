@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.0</version>
+		<version>3.3.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.pivotal.cloudcache.sample</groupId>
@@ -15,7 +15,6 @@
 	<description>Spring Boot application using Pivotal Cloud Cache on Pivotal Platform</description>
 
 	<properties>
-		<log4j2.version>2.17.1</log4j2.version>
 		<springBootForGemFire.version>2.0.0</springBootForGemFire.version>
 		<vmwareGemFire.version>10.2.1</vmwareGemFire.version>
 	</properties>
